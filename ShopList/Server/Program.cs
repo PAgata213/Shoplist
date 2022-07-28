@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.OpenApi.Models;
 using ShopList.DataAccess;
 using ShopList.DataAccess.DataContexts;
+using ShopList.Server.API.Authentication;
 using ShopList.Server.ServerHelpers;
 using ShopList.Shared.DataModels.Authentication;
 
@@ -15,6 +16,7 @@ builder.Services.AddShopListDbContexts(connectionString);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
   c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
@@ -28,6 +30,8 @@ builder.Services.AddIdentity<IdentityUserModel, IdentityRole>(o =>
 }).AddEntityFrameworkStores<AppDbContext>();
 
 var app = builder.Build();
+
+app.RegisterAccountsAPI();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
