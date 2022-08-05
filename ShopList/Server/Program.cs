@@ -39,7 +39,7 @@ builder.Services.AddScoped<IDataAccessHelper, DataAccessHelper>();
 
 var app = builder.Build();
 
-app.RegisterAccountsAPI();
+app.RegisterAllAPI();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -61,7 +61,6 @@ app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 
 app.MapRazorPages();
 app.MapControllers();
