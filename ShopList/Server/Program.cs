@@ -3,11 +3,14 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.OpenApi.Models;
 using ShopList.DataAccess;
 using ShopList.DataAccess.DataContexts;
-using ShopList.Server.API.Authentication;
+using ShopList.Server.Helpers;
 using ShopList.Server.ServerHelpers;
 using ShopList.Shared.DataModels.Authentication;
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
+using ShopList.Shared.Interfaces;
+using ShopList.DataAccess.DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +35,8 @@ builder.Services.AddIdentity<IdentityUserModel, IdentityRole>(o =>
 }).AddEntityFrameworkStores<AppDbContext>();
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+builder.Services.AddScoped<IDataAccessHelper, DataAccessHelper>();
+
 var app = builder.Build();
 
 app.RegisterAccountsAPI();
