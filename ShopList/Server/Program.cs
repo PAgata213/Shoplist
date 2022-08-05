@@ -6,6 +6,8 @@ using ShopList.DataAccess.DataContexts;
 using ShopList.Server.API.Authentication;
 using ShopList.Server.ServerHelpers;
 using ShopList.Shared.DataModels.Authentication;
+using AutoMapper;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +31,7 @@ builder.Services.AddIdentity<IdentityUserModel, IdentityRole>(o =>
   o.Password.RequiredLength = 8;
 }).AddEntityFrameworkStores<AppDbContext>();
 
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 var app = builder.Build();
 
 app.RegisterAccountsAPI();
