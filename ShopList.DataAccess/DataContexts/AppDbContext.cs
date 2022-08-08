@@ -7,6 +7,7 @@ using ShopList.Shared.DataModels.ShopList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,6 +19,22 @@ namespace ShopList.DataAccess.DataContexts
     {
     }
 
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+      var cascadeFKs = builder.Model.GetEntityTypes()
+          .SelectMany(t => t.GetForeignKeys())
+          .Where(fk => !fk.IsOwnership && fk.DeleteBehavior == DeleteBehavior.Cascade);
+
+      foreach (var fk in cascadeFKs)
+      {
+        fk.DeleteBehavior = DeleteBehavior.Restrict;
+      }
+
+      base.OnModelCreating(builder);
+    }
+
     public DbSet<Product> Products { get; set; }
+    public DbSet<ShopBrand> ShopBrands { get; set; }
+    public DbSet<Shop> Shops { get; set; }
   }
 }

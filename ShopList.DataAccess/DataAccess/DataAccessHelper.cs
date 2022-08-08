@@ -19,20 +19,20 @@ namespace ShopList.DataAccess.DataAccess
       _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<T>> Get<T>() where T : class
+    public async Task<IEnumerable<T>> GetAsync<T>() where T : class
       => await _dbContext.Set<T>().AsNoTracking().ToListAsync();
 
-    public async Task<T?> Get<T>(int id) where T : EntityModel
+    public async Task<T?> GetAsync<T>(int id) where T : EntityModel
       => await _dbContext.Set<T>().FindAsync(id);
 
-    public async Task<int?> Create<T>(T model) where T : EntityModel
+    public async Task<int?> CreateAsync<T>(T model) where T : EntityModel
     {
       _dbContext.Set<T>().Add(model);
       await _dbContext.SaveChangesAsync();
       return model.Id;
     }
 
-    public async Task<bool> Update<T>(T model) where T : EntityModel
+    public async Task<bool> UpdateAsync<T>(T model) where T : EntityModel
     {
       var data = await _dbContext.Set<T>().FindAsync(model.Id);
       if (data == null)
@@ -44,12 +44,12 @@ namespace ShopList.DataAccess.DataAccess
       return true;
     }
 
-    public async Task Delete<T>(T model) where T : EntityModel
+    public async Task DeleteAsync<T>(T model) where T : EntityModel
     {
-      await Delete<T>(model.Id);
+      await DeleteAsync<T>(model.Id);
     }
 
-    public async Task Delete<T>(int id) where T : EntityModel
+    public async Task DeleteAsync<T>(int id) where T : EntityModel
     {
       var data = await _dbContext.Set<T>().FindAsync(id);
       if (data == null)

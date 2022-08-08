@@ -10,16 +10,16 @@ namespace ShopList.Shared.Interfaces
 {
   public interface IDataAccessHelper
   {
-    Task<IEnumerable<T>> Get<T>() where T : class;
+    Task<IEnumerable<T>> GetAsync<T>() where T : class;
 
-    Task<T?> Get<T>(int id) where T : EntityModel;
+    Task<T?> GetAsync<T>(int id) where T : EntityModel;
 
-    Task<int?> Create<T>(T model) where T : EntityModel;
+    Task<int?> CreateAsync<T>(T model) where T : EntityModel;
 
-    Task<bool> Update<T>(T model) where T : EntityModel;
+    Task<bool> UpdateAsync<T>(T model) where T : EntityModel;
 
-    Task Delete<T>(int id) where T : EntityModel;
+    Task DeleteAsync<T>(int id) where T : EntityModel;
 
-    Task Delete<T>(T model) where T : EntityModel;
+    Task DeleteAsync<T>(T model) where T : EntityModel;
   }
 }
