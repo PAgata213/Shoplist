@@ -11,8 +11,10 @@ namespace ShopList.Shared.DataModels.ShopList
   public class Product : EntityModel
   {
     [Required]
+    [StringLength(50)]
     public string ProductName { get; set; }
 
+    [StringLength(250)]
     public string? Description { get; set; }
   }
 }

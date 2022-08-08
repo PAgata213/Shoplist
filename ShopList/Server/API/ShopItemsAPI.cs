@@ -19,20 +19,20 @@ public static class ShopItemsAPI
 
   private static async Task<IEnumerable<ProductDTO>> GetShopItems(IDataAccessHelper dataAccessHelper, IMapper mapper)
   {
-    var products = await dataAccessHelper.Get<Product>();
+    var products = await dataAccessHelper.GetAsync<Product>();
     return products.Select(p => mapper.Map<ProductDTO>(p));
   }
 
   private static async Task<ProductDTO?> GetShopItem(IDataAccessHelper dataAccessHelper, IMapper mapper, int id)
   {
-    var product = await dataAccessHelper.Get<Product>(id);
+    var product = await dataAccessHelper.GetAsync<Product>(id);
     return mapper.Map<ProductDTO>(product);
   }
 
   private static async Task<IResult> CreateShopItem(IDataAccessHelper dataAccessHelper, IMapper mapper, ProductDTO productDTO)
   {
     var product = mapper.Map<Product>(productDTO);
-    var productId = await dataAccessHelper.Create(product);
+    var productId = await dataAccessHelper.CreateAsync(product);
     if (productId == null || productId <= 0)
     {
       TypedResults.Problem();
@@ -42,7 +42,7 @@ public static class ShopItemsAPI
 
   private static async Task<IResult> RemoveShopItem(IDataAccessHelper dataAccessHelper, int id)
   {
-    await dataAccessHelper.Delete<Product>(id);
+    await dataAccessHelper.DeleteAsync<Product>(id);
     return TypedResults.Ok();
   }
 }
