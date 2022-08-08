@@ -10,6 +10,12 @@ namespace ShopList.Server.Helpers
     {
       CreateMap<ProductDTO, Product>();
       CreateMap<Product, ProductDTO>();
+
+      CreateMap<ShopBrandDTO, ShopBrand>();
+      CreateMap<ShopBrand, ShopBrandDTO>();
+
+      CreateMap<ShopDTO, Shop>();
+      CreateMap<Shop, ShopDTO>();
     }
   }
 }
