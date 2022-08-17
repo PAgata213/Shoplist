@@ -19,6 +19,9 @@ namespace ShopList.DataAccess.DataAccess
       _dbContext = dbContext;
     }
 
+    public IQueryable<T> GetAsQuerable<T>() where T : class 
+      => _dbContext.Set<T>().AsQueryable<T>();
+
     public async Task<IEnumerable<T>> GetAsync<T>() where T : class
       => await _dbContext.Set<T>().AsNoTracking().ToListAsync();
 

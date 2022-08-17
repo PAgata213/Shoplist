@@ -10,6 +10,8 @@ namespace ShopList.Shared.Interfaces
 {
   public interface IDataAccessHelper
   {
+    IQueryable<T> GetAsQuerable<T>() where T : class;
+
     Task<IEnumerable<T>> GetAsync<T>() where T : class;
 
     Task<T?> GetAsync<T>(int id) where T : EntityModel;
