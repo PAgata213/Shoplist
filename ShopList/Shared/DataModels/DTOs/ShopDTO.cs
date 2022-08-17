@@ -10,19 +10,22 @@ namespace ShopList.Shared.DataModels.DTOs
 {
   public class ShopDTO
   {
-    [Required]
-    [StringLength(50)]
+    public int Id { get; set; }
+
+    [StringLength(50, ErrorMessage = "Adres jest za długi")]
+    [Required(AllowEmptyStrings = false, ErrorMessage = "Adres jest wymagany")]
     public string Address { get; set; }
 
-    [Required]
-    [StringLength(6)]
+    [StringLength(6, ErrorMessage = "Kod pocztowy jest za długi")]
+    [Required(AllowEmptyStrings = false, ErrorMessage = "Kod pocztowy jest wymagany")]
     public string ZipCode { get; set; }
 
-    [Required]
-    [StringLength(50)]
+    [StringLength(50, ErrorMessage = "Nazwa miasta jest za długa")]
+    [Required(AllowEmptyStrings = false, ErrorMessage = "Miasto jest wymagane")]
     public string City { get; set; }
 
-    [Required]
-    public ShopBrand ShopBrand { get; set; }
+    [Required(ErrorMessage = "Nie wybrano Nazwy sklepu")]
+    [Range(1, int.MaxValue, ErrorMessage = "Nie wybrano Nazwy sklepu")]
+    public int ShopBrandId { get; set; }
   }
 }

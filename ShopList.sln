@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32708.82
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopList.Server", "ShopList\Server\ShopList.Server.csproj", "{DC0BE39B-3A9B-4593-A9D3-299C4BAF21D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopList.Server", "ShopList\Server\ShopList.Server.csproj", "{DC0BE39B-3A9B-4593-A9D3-299C4BAF21D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopList.Client", "ShopList\Client\ShopList.Client.csproj", "{3010AB94-23F6-429D-9A8C-2D5D1627F9D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopList.Client", "ShopList\Client\ShopList.Client.csproj", "{3010AB94-23F6-429D-9A8C-2D5D1627F9D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopList.Shared", "ShopList\Shared\ShopList.Shared.csproj", "{B7E9B8AE-A78B-4536-B055-0A876E6C9429}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopList.Shared", "ShopList\Shared\ShopList.Shared.csproj", "{B7E9B8AE-A78B-4536-B055-0A876E6C9429}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopList.DataAccess", "ShopList.DataAccess\ShopList.DataAccess.csproj", "{D8651AFE-F8E9-489D-A930-91EC56A46BBA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopList.DataAccess", "ShopList.DataAccess\ShopList.DataAccess.csproj", "{D8651AFE-F8E9-489D-A930-91EC56A46BBA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

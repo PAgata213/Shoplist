@@ -1,8 +1,13 @@
 ﻿using AutoMapper;
 using ShopList.Shared.DataModels.DTOs;
 using ShopList.Shared.DataModels.ShopList;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ShopList.Server.Helpers
+namespace ShopList.Shared.Helpers
 {
   public class MapperProfile : Profile
   {

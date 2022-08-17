@@ -34,7 +34,7 @@ builder.Services.AddIdentity<IdentityUserModel, IdentityRole>(o =>
   o.Password.RequiredLength = 8;
 }).AddEntityFrameworkStores<AppDbContext>();
 
-builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+builder.Services.AddAutoMapper(typeof(ShopList.Shared.Helpers.MapperProfile).GetTypeInfo().Assembly);
 builder.Services.AddScoped<IDataAccessHelper, DataAccessHelper>();
 
 var app = builder.Build();
