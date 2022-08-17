@@ -18,7 +18,7 @@ namespace ShopList.Server.ServerHelpers
               appContext.Database.Migrate();
             }
           }
-          catch (Exception ex)
+          catch (Exception)
           {
             throw;
           }

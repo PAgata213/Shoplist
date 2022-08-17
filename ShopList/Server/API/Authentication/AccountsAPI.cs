@@ -14,8 +14,8 @@ namespace ShopList.Server.API.Authentication
   {
     public static void RegisterAccountsAPI(this WebApplication app)
     {
-      app.MapPost("/api/accounts/registration", RegisterUser);
-      app.MapPost("/api/accounts/login", LoginUser);
+      app.MapPost(ShopList.Shared.APIAdressess.RegisterUser, RegisterUser);
+      app.MapPost(ShopList.Shared.APIAdressess.LoginUser, LoginUser);
     }
 
     private static async Task<IResult> RegisterUser(UserManager<IdentityUserModel> userManager, RegistrationUserDTO userForRegistration)
