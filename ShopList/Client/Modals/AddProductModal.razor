@@ -1,0 +1,95 @@
+﻿@using ShopList.Client.Interfaces
+@using ShopList.Shared.DataModels.DTOs
+@using ShopList.Shared.DataModels.ShopList;
+@using ShopList.Client.Helpers.Components;
+
+@inject IProductsService _productsService;
+
+<div class="modal @ModalClass" tabindex="-1" role="dialog" style="display:@ModalDisplay">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+            </div>
+            <div class="modal-body">
+                @if (ProductDTOModel != null)
+                {
+                    <EditForm OnValidSubmit="Save" Model="@ProductDTOModel">
+                        <DataAnnotationsValidator />
+                        <div class="form-group row">
+                            <label for="email" class="col-md-4 col-form-label">Nazwa produktu:</label>
+                            <div class="col-md-10">
+                                <InputText id="email" class="form-control" @bind-Value="ProductDTOModel.ProductName" />
+                                <ValidationMessage For="@(() => ProductDTOModel.ProductName)" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="email" class="col-md-4 col-form-label">Opis:</label>
+                            <div class="col-md-10">
+                                <InputText id="email" class="form-control" @bind-Value="ProductDTOModel.Description" />
+                                <ValidationMessage For="@(() => ProductDTOModel.Description)" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Save</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="() => Close()">Close</button>
+                        </div>
+                    </EditForm>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (ShowBackdrop)
+{
+    <div class="modal-backdrop fade show"></div>
+}
+
+@code {
+    public Guid Guid = Guid.NewGuid();
+    public string ModalDisplay = "none;";
+    public string ModalClass = "";
+    public bool ShowBackdrop = false;
+
+    [Parameter] public EventCallback OnSaveSuccess { get; set; }
+
+    public ProductDTO ProductDTOModel { get; set; } = new();
+
+    public void Open()
+    {
+        ModalDisplay = "block;";
+        ModalClass = "Show";
+        ShowBackdrop = true;
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        ProductDTOModel = null;
+        ModalDisplay = "none";
+        ModalClass = "";
+        ShowBackdrop = false;
+        StateHasChanged();
+    }
+
+    private async Task Save()
+    {
+        try
+        {
+            if (ProductDTOModel.Id == 0)
+            {
+                await _productsService.CreateProductAsync(ProductDTOModel);
+            }
+            else
+            {
+                await _productsService.UpdateProductAsync(ProductDTOModel);
+            }
+            await OnSaveSuccess.InvokeAsync();
+            Close();
+        }
+        catch (Exception)
+        {
+        }
+    }
+}

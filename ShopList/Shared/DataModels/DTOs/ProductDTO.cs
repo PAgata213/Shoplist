@@ -9,6 +9,8 @@ namespace ShopList.Shared.DataModels.DTOs
 {
   public class ProductDTO
   {
+    public int Id { get; set; }
+
     [Required(ErrorMessage = "Nazwa produktu nie może być pusta!")]
     public string ProductName { get; set; }
 

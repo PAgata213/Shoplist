@@ -1,0 +1,47 @@
+﻿@using ShopList.Client.Helpers
+@using ShopList.Shared.DataModels.ShopList
+
+<tr class="@_cssClass" @onclick="RowClicked">
+    <th>@RowState.Item.Id</th>
+    <th>@RowState.Item.ProductName</th>
+    <th>@RowState.Item.Description</th>
+    <th style="width: 15%">
+        <div>
+            <button type="button" class="btn btn-danger" data-dismiss="modal" @onclick="DeleteRow">Delete</button>
+            <button type="button" class="btn btn-info" data-dismiss="modal" @onclick="EditRow">Edit</button>
+        </div>
+    </th>
+</tr>
+
+@code {
+    [Parameter] public RowState<Product> RowState { get; set; }
+    [Parameter] public EventCallback<RowState<Product>> RowSelectionChanged { get; set; }
+
+    [Parameter] public EventCallback<Product> RowDeleteClicked { get; set; }
+    [Parameter] public EventCallback<Product> RowEditClicked { get; set; }
+
+    private async void RowClicked()
+    {
+        RowState.IsSelected = !RowState.IsSelected;
+        await RowSelectionChanged.InvokeAsync(RowState);
+    }
+
+    private async void DeleteRow()
+    {
+        await RowDeleteClicked.InvokeAsync(RowState.Item);
+    }
+
+    private async void EditRow()
+    {
+        await RowEditClicked.InvokeAsync(RowState.Item);
+    }
+
+    private Product _product => RowState.Item;
+    private string _cssClass => RowState.IsSelected ? "selected-row" : "";
+}
+
+<style>
+    .selected-row {
+        background-color: #0000ff77;
+    }
+</style>

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using ShopList.Client.Pages;
 using ShopList.DataAccess.DataAccess;
 using ShopList.Shared.DataModels.DTOs;
 using ShopList.Shared.DataModels.ShopList;
@@ -12,10 +13,11 @@ public static class ShopItemsAPI
 {
   public static void RegisterItemsAPI(this WebApplication app)
   {
-    app.MapGet(ShopList.Shared.APIAdressess.GetShopItems, GetShopItems);
-    app.MapGet(ShopList.Shared.APIAdressess.GetShopItem, GetShopItem);
-    app.MapPost(ShopList.Shared.APIAdressess.CreateShopItem, CreateShopItem);
-    app.MapPost(ShopList.Shared.APIAdressess.RemoveShopItem, RemoveShopItem);
+    app.MapGet(ShopList.Shared.APIAdressess.GetProductss, GetShopItems);
+    app.MapGet(ShopList.Shared.APIAdressess.GetProduct, GetShopItem);
+    app.MapPost(ShopList.Shared.APIAdressess.CreateProduct, CreateShopItem);
+    app.MapPut(ShopList.Shared.APIAdressess.CreateProduct, UpdateShopItem);
+    app.MapPost(ShopList.Shared.APIAdressess.RemoveProduct, RemoveShopItem);
   }
 
   private static async Task<Response<IEnumerable<Product>>> GetShopItems(IDataAccessHelper dataAccessHelper)
@@ -41,9 +43,24 @@ public static class ShopItemsAPI
     return TypedResults.Ok(new Response<Product> { DataModel = product });
   }
 
-  private static async Task<IResult> RemoveShopItem(IDataAccessHelper dataAccessHelper, int id)
+  private static async Task<IResult> UpdateShopItem(IDataAccessHelper dataAccessHelper, IMapper mapper, ProductDTO productDTO)
   {
-    await dataAccessHelper.DeleteAsync<Product>(id);
+    if (productDTO == null || productDTO.Id <= 0)
+    {
+      return TypedResults.BadRequest(new Response<Product> { ErrorMessage = "Selected product does not exists" });
+    }
+    var product = mapper.Map<Product>(productDTO);
+    var result = await dataAccessHelper.UpdateAsync(product);
+    if (!result)
+    {
+      TypedResults.Problem("Error during updating product");
+    }
+    return TypedResults.Ok(new Response<Product> { DataModel = product });
+  }
+
+  private static async Task<IResult> RemoveShopItem(IDataAccessHelper dataAccessHelper, Product product)
+  {
+    await dataAccessHelper.DeleteAsync(product);
     return TypedResults.Ok(new Response<Product>());
   }
 }

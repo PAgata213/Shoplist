@@ -1,0 +1,84 @@
+﻿@page "/products"
+
+@using AutoMapper
+@using ShopList.Client.Helpers
+@using ShopList.Client.Interfaces
+@using ShopList.Client.Modals
+@using ShopList.Shared
+@using ShopList.Shared.DataModels.DTOs
+@using ShopList.Shared.DataModels.ShopList
+
+@inject IProductsService _productsService
+@inject IMapper _mapper
+
+<h3>Products</h3>
+
+<PageTitle>Produkty</PageTitle>
+
+@if (_productsList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Nazwa produktu</th>
+                <th scope="col">Opis</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in _productsList)
+            {
+                <ShopList.Client.Pages.Rows.ProductRow RowState="@product"
+                                                       RowDeleteClicked="@DeleteProduct"
+                                                       RowEditClicked="@EditProduct" />
+            }
+        </tbody>
+    </table>
+}
+
+<ShopList.Client.Modals.AddProductModal @ref="productModal"
+                                        OnSaveSuccess="Refresh" />
+
+<button type="button" class="btn btn-primary" @onclick="() => OpenShopModal()">New Shop</button>
+
+@code {
+    private ShopList.Client.Modals.AddProductModal productModal { get; set; }
+
+    private IEnumerable<RowState<Product>> _productsList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Refresh();
+    }
+
+    private async Task Refresh()
+    {
+        var data = await _productsService.GetProductsAsync();
+        _productsList = data.Select(p => new RowState<Product> { Item = p });
+    }
+
+    private void OpenShopModal(Product product = null)
+    {
+        productModal.ProductDTOModel = _mapper.Map<ProductDTO>(product ?? new());
+        productModal.Open();
+    }
+
+    private async Task DeleteProduct(Product product)
+    {
+        var result = await _productsService.RemoveProductAsync(product);
+        if (result)
+        {
+            await Refresh();
+        }
+    }
+
+    private async Task EditProduct(Product product)
+    {
+        OpenShopModal(product);
+    }
+}

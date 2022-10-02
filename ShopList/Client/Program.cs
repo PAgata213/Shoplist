@@ -16,6 +16,7 @@ builder.Services.AddAutoMapper(typeof(ShopList.Shared.Helpers.MapperProfile).Get
 builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddSingleton<IShopBrandsService, ShopBrandsService>();
 builder.Services.AddSingleton<IShopsService, ShopsService>();
+builder.Services.AddSingleton<IProductsService, ProductsService>();
 builder.Services.AddSingleton<IAPIHelper, APIHelper>();
 
 await builder.Build().RunAsync();

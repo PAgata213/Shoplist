@@ -81,22 +81,27 @@ namespace ShopList.Shared
     /// Get all ShopItems
     /// Request Method : GET
     /// </summary>
-    public const string GetShopItems = "/api/shops/items";
+    public const string GetProductss = "/api/shops/items";
     /// <summary>
     /// Get specified ShopItem
     /// Request Method : GET
     /// </summary>
-    public const string GetShopItem = "/api/shops/items/{id}";
+    public const string GetProduct = "/api/shops/items/{id}";
     /// <summary>
     /// Create new ShopItem from given model
     /// Request Method : POST
     /// </summary>
-    public const string CreateShopItem = "/api/shops/items/create";
+    public const string CreateProduct = "/api/shops/items/create";
+    /// <summary>
+    /// Update specified ShopItem from given model
+    /// Request Method : PUT
+    /// </summary>
+    public const string UpdateProduct = "/api/shops/items/update";
     /// <summary>
     /// Remove specified ShopItem
     /// Request Method : POST
     /// </summary>
-    public const string RemoveShopItem = "/api/shops/items/remove/{id}";
+    public const string RemoveProduct = "/api/shops/items/remove/{id}";
 
     #endregion
   }
