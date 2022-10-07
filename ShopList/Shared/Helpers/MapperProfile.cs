@@ -21,6 +21,9 @@ namespace ShopList.Shared.Helpers
 
       CreateMap<ShopDTO, Shop>();
       CreateMap<Shop, ShopDTO>();
+
+      CreateMap<ListOfProductsToBuyDTO, ListOfProductsToBuy>();
+      CreateMap<ListOfProductsToBuy, ListOfProductsToBuyDTO>();
     }
   }
 }
