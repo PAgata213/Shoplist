@@ -17,6 +17,7 @@ builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri(build
 builder.Services.AddSingleton<IShopBrandsService, ShopBrandsService>();
 builder.Services.AddSingleton<IShopsService, ShopsService>();
 builder.Services.AddSingleton<IProductsService, ProductsService>();
+builder.Services.AddSingleton<IShopItemsToBuyService, ShopItemsToBuyService>();
 builder.Services.AddSingleton<IAPIHelper, APIHelper>();
 
 await builder.Build().RunAsync();
