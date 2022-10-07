@@ -37,12 +37,20 @@ namespace ShopList.Server.API
     {
       if (shopDTO == null || shopDTO.ShopBrandId <= 0)
       {
-        return TypedResults.BadRequest(new Response<Shop> { ErrorMessage = "Invalid data" });
+        return TypedResults.BadRequest(new Response<Shop> 
+        { 
+          ErrorMessage = "Invalid data", 
+          StatusCode = System.Net.HttpStatusCode.BadRequest 
+        });
       }
       var shopBrand = await dataAccessHelper.GetAsync<ShopBrand>(shopDTO.ShopBrandId);
       if (shopBrand == null)
       {
-        return TypedResults.BadRequest(new Response<Shop> { ErrorMessage = "Selected shop brand does not exists" });
+        return TypedResults.BadRequest(new Response<Shop> 
+        { 
+          ErrorMessage = "Selected shop brand does not exists", 
+          StatusCode = System.Net.HttpStatusCode.BadRequest 
+        });
       }
       var shop = mapper.Map<Shop>(shopDTO);
       shop.ShopBrand = shopBrand;
@@ -59,12 +67,20 @@ namespace ShopList.Server.API
     {
       if (shopDTO == null || shopDTO.Id <= 0 || shopDTO.ShopBrandId <= 0)
       {
-        return TypedResults.BadRequest(new Response<Shop> { ErrorMessage = "Invalid data" });
+        return TypedResults.BadRequest(new Response<Shop> 
+        { 
+          ErrorMessage = "Invalid data", 
+          StatusCode = System.Net.HttpStatusCode.BadRequest 
+        });
       }
       var shopBrand = await dataAccessHelper.GetAsync<ShopBrand>(shopDTO.ShopBrandId);
       if (shopBrand == null)
       {
-        return TypedResults.BadRequest(new Response<Shop> { ErrorMessage = "Selected shop brand does not exists" });
+        return TypedResults.BadRequest(new Response<Shop> 
+        { 
+          ErrorMessage = "Selected shop brand does not exists", 
+          StatusCode = System.Net.HttpStatusCode.BadRequest  
+        });
       }
       var shop = mapper.Map<Shop>(shopDTO);
       shop.ShopBrand = shopBrand;

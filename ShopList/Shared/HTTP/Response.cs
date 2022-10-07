@@ -10,7 +10,7 @@ namespace ShopList.Shared.HTTP
 {
   public class Response<T> where T : class
   {
-    public HttpStatusCode StatusCode { get; set; }
+    public HttpStatusCode StatusCode { get; set; } = HttpStatusCode.OK;
     public bool IsSuccessStatusCode
     {
       get { return ((int)StatusCode >= 200) && ((int)StatusCode <= 299); }

@@ -47,7 +47,11 @@ public static class ShopItemsAPI
   {
     if (productDTO == null || productDTO.Id <= 0)
     {
-      return TypedResults.BadRequest(new Response<Product> { ErrorMessage = "Selected product does not exists" });
+      return TypedResults.BadRequest(new Response<Product> 
+      { 
+        ErrorMessage = "Selected product does not exists", 
+        StatusCode = System.Net.HttpStatusCode.BadRequest 
+      });
     }
     var product = mapper.Map<Product>(productDTO);
     var result = await dataAccessHelper.UpdateAsync(product);
