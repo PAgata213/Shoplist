@@ -10,8 +10,8 @@ namespace ShopList.Shared
   {
     #region Accounts API
 
-    public const string RegisterUser = "/api/accounts/registration";
-    public const string LoginUser = "/api/accounts/login";
+    public const string RegisterUser = "/api/accounts/registration/";
+    public const string LoginUser = "/api/accounts/login/";
 
     #endregion
 
@@ -21,7 +21,7 @@ namespace ShopList.Shared
     /// Get all ShopBrands
     /// Request Method : GET
     /// </summary>
-    public const string GetShopBrands = "/api/shopbrands";
+    public const string GetShopBrands = "/api/shopbrands/";
     /// <summary>
     /// Get specified ShopBrand
     /// Request Method : GET
@@ -31,12 +31,12 @@ namespace ShopList.Shared
     /// Create new ShopBrand from given model
     /// Request Method : POST
     /// </summary>
-    public const string CreateShopBrand = "/api/shopbrands/create";
+    public const string CreateShopBrand = "/api/shopbrands/create/";
     /// <summary>
     /// Update specified ShopBrand from given model
     /// Request Method : PUT
     /// </summary>
-    public const string UpdateShopBrand = "/api/shopbrands/create";
+    public const string UpdateShopBrand = "/api/shopbrands/update/";
     /// <summary>
     /// Remove specified ShopBrand
     /// Request Method : POST
@@ -51,7 +51,7 @@ namespace ShopList.Shared
     /// Get all Shops
     /// Request Method : GET
     /// </summary>
-    public const string GetShops = "/api/shops";
+    public const string GetShops = "/api/shops/";
     /// <summary>
     /// Get specified Shop
     /// Request Method : GET
@@ -61,12 +61,12 @@ namespace ShopList.Shared
     /// Create new Shop from given model
     /// Request Method : POST
     /// </summary>
-    public const string CreateShop = "/api/shops/create";
+    public const string CreateShop = "/api/shops/create/";
     /// <summary>
     /// Update specified Shop from given model
     /// Request Method : PUT
     /// </summary>
-    public const string UpdateShop = "/api/shops/update";
+    public const string UpdateShop = "/api/shops/update/";
     /// <summary>
     /// Remove specified Shop
     /// Request Method : POST
@@ -81,7 +81,7 @@ namespace ShopList.Shared
     /// Get all ShopItems
     /// Request Method : GET
     /// </summary>
-    public const string GetProductss = "/api/shops/items";
+    public const string GetProductss = "/api/shops/items/";
     /// <summary>
     /// Get specified ShopItem
     /// Request Method : GET
@@ -91,12 +91,12 @@ namespace ShopList.Shared
     /// Create new ShopItem from given model
     /// Request Method : POST
     /// </summary>
-    public const string CreateProduct = "/api/shops/items/create";
+    public const string CreateProduct = "/api/shops/items/create/";
     /// <summary>
     /// Update specified ShopItem from given model
     /// Request Method : PUT
     /// </summary>
-    public const string UpdateProduct = "/api/shops/items/update";
+    public const string UpdateProduct = "/api/shops/items/update/";
     /// <summary>
     /// Remove specified ShopItem
     /// Request Method : POST
