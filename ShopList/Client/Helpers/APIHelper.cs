@@ -24,7 +24,7 @@ namespace ShopList.Client.Helpers
       return await ProcessData<TResponse>(response);
     }
 
-    public async Task<Response<TResponse>> GetAsync<TResponse>(string apiEndpoint, int id) where TResponse : class
+    public async Task<Response<TResponse>> GetAsync<TResponse>(string apiEndpoint, params int[] id) where TResponse : class
     {
       var response = await _httpClient.GetAsync(string.Format(apiEndpoint, id));
       return await ProcessData<TResponse>(response);
@@ -36,7 +36,7 @@ namespace ShopList.Client.Helpers
       return await ProcessData<TResponse>(response);
     }
 
-    public async Task<Response<TResponse>> PostAsync<TResponse>(string apiEndpoint, int id) where TResponse : class
+    public async Task<Response<TResponse>> PostAsync<TResponse>(string apiEndpoint, params int[] id) where TResponse : class
     {
       var response = await _httpClient.PostAsync(string.Format(apiEndpoint, id), null);
       return await ProcessData<TResponse>(response);
