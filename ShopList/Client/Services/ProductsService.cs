@@ -18,7 +18,7 @@ namespace ShopList.Client.Services
 
     public async Task<IEnumerable<Product>> GetProductsAsync()
     {
-      var content = await _apiHelper.GetAsync<IEnumerable<Product>>(ShopList.Shared.APIAdressess.GetProductss);
+      var content = await _apiHelper.GetAsync<IEnumerable<Product>>(ShopList.Shared.APIAdressess.GetProducts);
       return content.DataModel ?? Enumerable.Empty<Product>();
     }
 
