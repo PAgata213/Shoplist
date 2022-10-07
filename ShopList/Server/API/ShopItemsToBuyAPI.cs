@@ -91,7 +91,7 @@ public static class ShopItemsToBuyAPI
   private static async Task<IResult> RemoveProductsList(IDataAccessHelper dataAccessHelper, int id)
   {
     await dataAccessHelper.DeleteAsync<ListOfProductsToBuy>(id);
-    return TypedResults.Ok(new Response<string>());
+    return TypedResults.Ok(new Response<ListOfProductsToBuy>());
   }
 
   private static async Task<IResult> AddProductToList(IDataAccessHelper dataAccessHelper, IMapper mapper, int ListId, int productId)

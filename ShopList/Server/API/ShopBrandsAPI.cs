@@ -57,6 +57,6 @@ public static class ShopBrandsAPI
   private static async Task<IResult> RemoveShopBrand(IDataAccessHelper dataAccessHelper, int id)
   {
     await dataAccessHelper.DeleteAsync<ShopBrand>(id);
-    return TypedResults.Ok(new Response<string>());
+    return TypedResults.Ok(new Response<ShopBrand>());
   }
 }
