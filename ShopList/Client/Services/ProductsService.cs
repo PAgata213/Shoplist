@@ -8,12 +8,10 @@ namespace ShopList.Client.Services
   public class ProductsService : IProductsService
   {
     private readonly IAPIHelper _apiHelper;
-    private readonly IMapper _mapper;
 
     public ProductsService(IAPIHelper apiHelper, IMapper mapper)
     {
       _apiHelper = apiHelper;
-      _mapper = mapper;
     }
 
     public async Task<IEnumerable<Product>> GetProductsAsync()

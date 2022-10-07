@@ -116,7 +116,7 @@ namespace ShopList.Shared
     /// Get specified ProductsList
     /// Request Method : GET
     /// </summary>
-    public const string GetProductsList = "/api/shoplists/{id}";
+    public const string GetProductsList = "/api/shoplists/{id}/{withProducts}";
     /// <summary>
     /// Create new ProductsList from given model
     /// Request Method : POST
