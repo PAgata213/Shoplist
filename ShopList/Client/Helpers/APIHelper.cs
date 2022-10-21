@@ -24,9 +24,10 @@ namespace ShopList.Client.Helpers
       return await ProcessData<TResponse>(response);
     }
 
-    public async Task<Response<TResponse>> GetAsync<TResponse>(string apiEndpoint, params int[] id) where TResponse : class
+    public async Task<Response<TResponse>> GetAsync<TResponse>(string apiEndpoint, Dictionary<string, object> parameters) where TResponse : class
     {
-      var response = await _httpClient.GetAsync(string.Format(apiEndpoint, id));
+      var url = FormatAPIAdress(apiEndpoint, parameters);
+      var response = await _httpClient.GetAsync(url);
       return await ProcessData<TResponse>(response);
     }
 
@@ -36,9 +37,10 @@ namespace ShopList.Client.Helpers
       return await ProcessData<TResponse>(response);
     }
 
-    public async Task<Response<TResponse>> PostAsync<TResponse>(string apiEndpoint, params int[] id) where TResponse : class
+    public async Task<Response<TResponse>> PostAsync<TResponse>(string apiEndpoint, Dictionary<string, object> parameters) where TResponse : class
     {
-      var response = await _httpClient.PostAsync(string.Format(apiEndpoint, id), null);
+      var url = FormatAPIAdress(apiEndpoint, parameters);
+      var response = await _httpClient.PostAsync(url, null);
       return await ProcessData<TResponse>(response);
     }
 
@@ -59,5 +61,8 @@ namespace ShopList.Client.Helpers
       contentData!.StatusCode = response.StatusCode;
       return contentData;
     }
+
+    private string FormatAPIAdress(string apiAdress, Dictionary<string, object> parameters)
+      => parameters.Aggregate(apiAdress, (s, k) => s.Replace($"{{{k.Key}}}", k.Value.ToString()));
   }
 }
