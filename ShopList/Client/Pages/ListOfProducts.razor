@@ -1,0 +1,44 @@
+﻿@page "/listofproducts/{ListId:int}";
+@using ShopList.Client.Interfaces
+@using ShopList.Shared.DataModels.DTOs
+
+@inject IShopItemsToBuyService _shopItemsToBuyService
+
+<h3>ListOfProducts</h3>
+@if (_listOfProductsToBuyDTO != null)
+{
+    <h2>@_listOfProductsToBuyDTO.ListName</h2>
+}
+
+
+@if (_listOfProductsToBuyDTO == null)
+{
+    if (_badId)
+    {
+        <p><em>Bad parameter</em></p>
+        return;
+    }
+
+    <p><em>Loading...</em></p>
+}
+
+@code
+{
+    [Parameter]
+    public int ListId { get; set; }
+
+    private ListOfProductsToBuyDTO? _listOfProductsToBuyDTO;
+
+    private bool _badId = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (ListId <= 0)
+        {
+            _badId = true;
+            return;
+        }
+        _listOfProductsToBuyDTO = await _shopItemsToBuyService.GetListOfProductsToBuyAsync(ListId!);
+        await base.OnInitializedAsync();
+    }
+}
