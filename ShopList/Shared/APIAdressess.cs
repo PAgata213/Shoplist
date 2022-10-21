@@ -131,7 +131,7 @@ namespace ShopList.Shared
     /// Remove specified ProductsList
     /// Request Method : POST
     /// </summary>
-    public const string RemoveProductsList = "/api/shoplists/remove/{id}";
+    public const string RemoveProductsList = "/api/shoplists/remove/";
     /// <summary>
     /// Add given Product to ProductsList
     /// Request Method : POST

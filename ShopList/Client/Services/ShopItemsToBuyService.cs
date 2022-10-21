@@ -13,21 +13,26 @@ namespace ShopList.Client.Services
       _apiHelper = apiHelper;
     }
 
-    public async Task<IEnumerable<ListOfProductsToBuy>> GetProductsToBuyAsync()
+    public async Task<IEnumerable<ListOfProductsToBuyDTO>> GetListOfProductsToBuyAsync()
     {
-      var content = await _apiHelper.GetAsync<IEnumerable<ListOfProductsToBuy>>(ShopList.Shared.APIAdressess.GetProductsLists);
-      return content.DataModel ?? Enumerable.Empty<ListOfProductsToBuy>();
+      var content = await _apiHelper.GetAsync<IEnumerable<ListOfProductsToBuyDTO>>(ShopList.Shared.APIAdressess.GetProductsLists);
+      return content.DataModel ?? Enumerable.Empty<ListOfProductsToBuyDTO>();
     }
 
-    public async Task<ListOfProductsToBuy?> GetProductsToBuyAsync(int id)
+    public async Task<ListOfProductsToBuyDTO?> GetListOfProductsToBuyAsync(int id, bool withProducts = true)
     {
-      var content = await _apiHelper.GetAsync<ListOfProductsToBuy>(string.Format(ShopList.Shared.APIAdressess.GetProductsList, id));
+      var content = await _apiHelper.GetAsync<ListOfProductsToBuyDTO>(ShopList.Shared.APIAdressess.GetProductsList, 
+        new()
+        {
+          { "id", id },
+          { "withProducts", withProducts }
+        });
       return content.DataModel;
     }
 
-    public async Task<ListOfProductsToBuy> CreateProductsToBuyAsync(ListOfProductsToBuyDTO listOfProductsToBuyDTO)
+    public async Task<ListOfProductsToBuyDTO> CreateListOfProductsToBuyAsync(ListOfProductsToBuyDTO listOfProductsToBuyDTO)
     {
-      var result = await _apiHelper.PostAsync<ListOfProductsToBuy, ListOfProductsToBuyDTO>(ShopList.Shared.APIAdressess.CreateProductsList, listOfProductsToBuyDTO);
+      var result = await _apiHelper.PostAsync<ListOfProductsToBuyDTO, ListOfProductsToBuyDTO>(ShopList.Shared.APIAdressess.CreateProductsList, listOfProductsToBuyDTO);
       if (!result.IsSuccessStatusCode)
       {
         throw new Exception(result?.ErrorMessage ?? result!.StatusCode.ToString());
@@ -36,7 +41,7 @@ namespace ShopList.Client.Services
       return result!.DataModel!;
     }
 
-    public async Task<Product> UpdateProductsToBuyAsync(ListOfProductsToBuyDTO listOfProductsToBuyDTO)
+    public async Task<Product> UpdateListOfProductsToBuyAsync(ListOfProductsToBuyDTO listOfProductsToBuyDTO)
     {
       var result = await _apiHelper.PutAsync<Product, ListOfProductsToBuyDTO>(ShopList.Shared.APIAdressess.UpdateProductsList, listOfProductsToBuyDTO);
       if (!result.IsSuccessStatusCode)
@@ -47,7 +52,7 @@ namespace ShopList.Client.Services
       return result!.DataModel!;
     }
 
-    public async Task<bool> RemoveProductsToBuyAsync(ListOfProductsToBuyDTO listOfProductsToBuyDTO)
+    public async Task<bool> RemoveListOfProductsToBuyAsync(ListOfProductsToBuyDTO listOfProductsToBuyDTO)
     {
       var result = await _apiHelper.PostAsync<ListOfProductsToBuyDTO, ListOfProductsToBuyDTO>(ShopList.Shared.APIAdressess.RemoveProductsList, listOfProductsToBuyDTO);
       return result.IsSuccessStatusCode;
@@ -55,13 +60,23 @@ namespace ShopList.Client.Services
 
     public async Task<bool> AddProductToProductsListAsync(int listId, int productId)
     {
-      var result = await _apiHelper.PostAsync<ListOfProductsToBuyDTO>(ShopList.Shared.APIAdressess.AddProductToList, listId, productId);
+      var result = await _apiHelper.PostAsync<ListOfProductsToBuyDTO>(ShopList.Shared.APIAdressess.AddProductToList, 
+        new()
+        {
+          { "listId", listId },
+          { "productId", productId }
+        });
       return result.IsSuccessStatusCode;
     }
 
-    public async Task<bool> RemoveProductToProductsListAsync(int listId, int productId)
+    public async Task<bool> RemoveProductFromProductsListAsync(int listId, int productId)
     {
-      var result = await _apiHelper.PostAsync<ListOfProductsToBuyDTO>(ShopList.Shared.APIAdressess.RemoveProductFromList, listId, productId);
+      var result = await _apiHelper.PostAsync<ListOfProductsToBuyDTO>(ShopList.Shared.APIAdressess.RemoveProductFromList, 
+        new()
+        {
+          { "listId", listId },
+          { "productId", productId }
+        });
       return result.IsSuccessStatusCode;
     }
   }

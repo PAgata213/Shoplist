@@ -20,10 +20,11 @@ public static class ShopItemsToBuyAPI
     app.MapPost(ShopList.Shared.APIAdressess.RemoveProductFromList, RemoveProductFromList);
   }
 
-  private static async Task<Response<IEnumerable<ListOfProductsToBuy>>> GetProductsLists(IDataAccessHelper dataAccessHelper)
+  private static async Task<Response<IEnumerable<ListOfProductsToBuyDTO>>> GetProductsLists(IMapper mapper, IDataAccessHelper dataAccessHelper)
   {
-    var response = new Response<IEnumerable<ListOfProductsToBuy>>();
-    response.DataModel = await dataAccessHelper.GetAsync<ListOfProductsToBuy>();
+    var response = new Response<IEnumerable<ListOfProductsToBuyDTO>>();
+    var data = await dataAccessHelper.GetAsync<ListOfProductsToBuy>();
+    response.DataModel = data.Select(s => MapListOfProductsToBuyToDTO(mapper, s));
     return response;
   }
 
@@ -54,7 +55,7 @@ public static class ShopItemsToBuyAPI
   {
     if (listOfProductsToBuyDTO == null)
     {
-      return TypedResults.BadRequest(new Response<ListOfProductsToBuy>
+      return TypedResults.BadRequest(new Response<ListOfProductsToBuyDTO>
       {
         ErrorMessage = "Bad entry data",
         StatusCode = System.Net.HttpStatusCode.BadRequest
@@ -66,14 +67,14 @@ public static class ShopItemsToBuyAPI
     {
       return TypedResults.Problem("Error while creating ListOfProductsToBuy");
     }
-    return TypedResults.Ok(new Response<ListOfProductsToBuy> { DataModel = listOfProductsToBuy });
+    return TypedResults.Ok(new Response<ListOfProductsToBuyDTO> { DataModel = MapListOfProductsToBuyToDTO(mapper, listOfProductsToBuy) });
   }
 
   private static async Task<IResult> UpdateProductsList(IDataAccessHelper dataAccessHelper, IMapper mapper, ListOfProductsToBuyDTO listOfProductsToBuyDTO)
   {
     if (listOfProductsToBuyDTO == null)
     {
-      return TypedResults.BadRequest(new Response<ListOfProductsToBuy>
+      return TypedResults.BadRequest(new Response<ListOfProductsToBuyDTO>
       {
         ErrorMessage = "Bad entry data",
         StatusCode = System.Net.HttpStatusCode.BadRequest
@@ -85,13 +86,32 @@ public static class ShopItemsToBuyAPI
     {
       return TypedResults.Problem("Error while updating ListOfProductsToBuy");
     }
-    return TypedResults.Ok(new Response<ListOfProductsToBuy> { DataModel = listOfProductsToBuy });
+    return TypedResults.Ok(new Response<ListOfProductsToBuyDTO> { DataModel = MapListOfProductsToBuyToDTO(mapper, listOfProductsToBuy) });
   }
 
-  private static async Task<IResult> RemoveProductsList(IDataAccessHelper dataAccessHelper, int id)
+  private static async Task<IResult> RemoveProductsList(IDataAccessHelper dataAccessHelper, ListOfProductsToBuyDTO listOfProductsToBuyDTO)
   {
-    await dataAccessHelper.DeleteAsync<ListOfProductsToBuy>(id);
-    return TypedResults.Ok(new Response<ListOfProductsToBuy>());
+    if (listOfProductsToBuyDTO == null)
+    {
+      return TypedResults.BadRequest(new Response<ListOfProductsToBuyDTO>
+      {
+        ErrorMessage = "Bad entry data",
+        StatusCode = System.Net.HttpStatusCode.BadRequest
+      });
+    }
+    try
+    {
+      await dataAccessHelper.DeleteAsync<ListOfProductsToBuy>(listOfProductsToBuyDTO.Id);
+    }
+    catch (Exception ex)
+    {
+      return TypedResults.BadRequest(new Response<ListOfProductsToBuyDTO>
+      {
+        ErrorMessage = $"Cannot delete selected ListOfProductsToBuy\n{ex.Message}",
+        StatusCode = System.Net.HttpStatusCode.UnprocessableEntity
+      });
+    }
+    return TypedResults.Ok(new Response<ListOfProductsToBuyDTO>());
   }
 
   private static async Task<IResult> AddProductToList(IDataAccessHelper dataAccessHelper, IMapper mapper, int ListId, int productId)

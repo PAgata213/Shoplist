@@ -6,11 +6,11 @@ namespace ShopList.Client.Interfaces
   public interface IShopItemsToBuyService
   {
     Task<bool> AddProductToProductsListAsync(int listId, int productId);
-    Task<ListOfProductsToBuy> CreateProductsToBuyAsync(ListOfProductsToBuyDTO listOfProductsToBuyDTO);
-    Task<IEnumerable<ListOfProductsToBuy>> GetProductsToBuyAsync();
-    Task<ListOfProductsToBuy?> GetProductsToBuyAsync(int id);
-    Task<bool> RemoveProductsToBuyAsync(ListOfProductsToBuyDTO listOfProductsToBuyDTO);
-    Task<bool> RemoveProductToProductsListAsync(int listId, int productId);
-    Task<Product> UpdateProductsToBuyAsync(ListOfProductsToBuyDTO listOfProductsToBuyDTO);
+    Task<ListOfProductsToBuyDTO> CreateListOfProductsToBuyAsync(ListOfProductsToBuyDTO listOfProductsToBuyDTO);
+    Task<IEnumerable<ListOfProductsToBuyDTO>> GetListOfProductsToBuyAsync();
+    Task<ListOfProductsToBuyDTO?> GetListOfProductsToBuyAsync(int id, bool withProducts = true);
+    Task<bool> RemoveListOfProductsToBuyAsync(ListOfProductsToBuyDTO listOfProductsToBuyDTO);
+    Task<bool> RemoveProductFromProductsListAsync(int listId, int productId);
+    Task<Product> UpdateListOfProductsToBuyAsync(ListOfProductsToBuyDTO listOfProductsToBuyDTO);
   }
 }
