@@ -24,15 +24,15 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var product in _listOfProductsToBuyDTO.ProductsToBuy)
+            @foreach (var productToBuy in _listOfProductsToBuyDTO.ProductsToBuy)
             {
                 <tr>
-                    <th style="width: 30%">@product.ProductName</th>
-                    <th style="width: 30%">@product.Description</th>
-                    <th style="width: 15%">Ilość</th>
+                    <th style="width: 30%">@productToBuy.Product.ProductName</th>
+                    <th style="width: 30%">@productToBuy.Product.Description</th>
+                    <th style="width: 15%">@productToBuy.Amount</th>
                     <th style="width: 15%">
                         <div>
-                            <button type="button" class="btn btn-danger" @onclick="() => RemoveProductFromList(product)">-</button>
+                            <button type="button" class="btn btn-danger" @onclick="() => RemoveProductFromList(productToBuy)">-</button>
                         </div>
                     </th>
                 </tr>
@@ -105,7 +105,7 @@
         if (products.Any())
         {
             var productsDTO = _productsService.MapToDTOs(_mapper, products);
-            var productsIds = productsDTO.Select(s => s.Id).Except(_listOfProductsToBuyDTO!.ProductsToBuy.Select(s => s.Id));
+            var productsIds = productsDTO.Select(s => s.Id).Except(_listOfProductsToBuyDTO!.ProductsToBuy.Select(s => s.ProductId));
             _productsDTO = productsDTO.Where(x => productsIds.Contains(x.Id)).ToList();
         }
         else
@@ -121,19 +121,19 @@
 
         if (result)
         {
-            _listOfProductsToBuyDTO!.ProductsToBuy.Add(productDTO);
+            _listOfProductsToBuyDTO!.ProductsToBuy.Add(_mapper.Map<ProductToBuyDTO>(productDTO));
             _productsDTO.Remove(productDTO);
         }
     }
 
-    private async Task RemoveProductFromList(ProductDTO productDTO)
+    private async Task RemoveProductFromList(ProductToBuyDTO productToBuyDTO)
     {
-        var result = await _shopItemsToBuyService.RemoveProductFromProductsListAsync(ListId, productDTO.Id);
+        var result = await _shopItemsToBuyService.RemoveProductFromProductsListAsync(ListId, productToBuyDTO.ProductId);
 
         if (result)
         {
-            _productsDTO.Add(productDTO);
-            _listOfProductsToBuyDTO!.ProductsToBuy.Remove(productDTO);
+            _productsDTO.Add(_mapper.Map<ProductDTO>(productToBuyDTO));
+            _listOfProductsToBuyDTO!.ProductsToBuy.Remove(productToBuyDTO);
         }
     }
 }

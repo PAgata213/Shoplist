@@ -41,6 +41,7 @@ public static class ShopItemsToBuyAPI
     var response = new Response<ListOfProductsToBuyDTO>();
     var data = withProducts ? await dataAccessHelper.GetAsQuerable<ListOfProductsToBuy>()
                                 .Include(s => s.ProductsToBuy)
+                                .ThenInclude(s => s.Product)
                                 .AsNoTracking()
                                 .FirstOrDefaultAsync(s => s.Id == id)
                              : await dataAccessHelper.GetAsync<ListOfProductsToBuy>(id);
@@ -136,7 +137,7 @@ public static class ShopItemsToBuyAPI
       return TypedResults.BadRequest("Selected Product does not exists");
     }
 
-    listOfProducts.ProductsToBuy.Add(product);
+    listOfProducts.ProductsToBuy.Add(new() { Product = product });
     await dataAccessHelper.SaveChangedAsync();
     return TypedResults.Ok(new Response<ListOfProductsToBuyDTO> { DataModel = MapListOfProductsToBuyToDTO(mapper, listOfProducts) });
   }
@@ -156,14 +157,20 @@ public static class ShopItemsToBuyAPI
       return TypedResults.BadRequest("Selected ListOfProductsToBuy does not exists");
     }
 
-    var product = await dataAccessHelper.GetAsQuerable<Product>()
-      .FirstOrDefaultAsync(p => p.Id == productId);
-    if (product == null)
+    var productExists = await dataAccessHelper.GetAsQuerable<Product>()
+      .AnyAsync(p => p.Id == productId);
+    if (!productExists)
     {
       return TypedResults.BadRequest("Selected Product does not exists");
     }
 
-    listOfProducts.ProductsToBuy.Remove(product);
+    var productToRemove = listOfProducts.ProductsToBuy.FirstOrDefault(s => s.ProductId == productId);
+    if (productToRemove == null)
+    {
+      return TypedResults.BadRequest("Selected Product does not exists in that list");
+    }
+
+    listOfProducts.ProductsToBuy.Remove(productToRemove);
     await dataAccessHelper.SaveChangedAsync();
     return TypedResults.Ok(new Response<ListOfProductsToBuyDTO> { DataModel = MapListOfProductsToBuyToDTO(mapper, listOfProducts) });
   }

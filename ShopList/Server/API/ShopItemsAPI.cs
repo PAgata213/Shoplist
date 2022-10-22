@@ -16,7 +16,7 @@ public static class ShopItemsAPI
     app.MapGet(ShopList.Shared.APIAdressess.GetProducts, GetShopItems);
     app.MapGet(ShopList.Shared.APIAdressess.GetProduct, GetShopItem);
     app.MapPost(ShopList.Shared.APIAdressess.CreateProduct, CreateShopItem);
-    app.MapPut(ShopList.Shared.APIAdressess.CreateProduct, UpdateShopItem);
+    app.MapPut(ShopList.Shared.APIAdressess.UpdateProduct, UpdateShopItem);
     app.MapPost(ShopList.Shared.APIAdressess.RemoveProduct, RemoveShopItem);
   }
 
