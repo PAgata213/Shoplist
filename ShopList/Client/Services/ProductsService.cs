@@ -53,5 +53,13 @@ namespace ShopList.Client.Services
       var result = await _apiHelper.PostAsync<Product, Product>(ShopList.Shared.APIAdressess.RemoveProduct, shop);
       return result.IsSuccessStatusCode;
     }
+
+    public IEnumerable<ProductDTO> MapToDTOs(IMapper mapper, IEnumerable<Product> products)
+    {
+      return products.Select(p =>
+      {
+        return mapper.Map<Product, ProductDTO>(p);
+      });
+    }
   }
 }

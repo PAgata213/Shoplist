@@ -63,8 +63,8 @@ namespace ShopList.Client.Services
       var result = await _apiHelper.PostAsync<ListOfProductsToBuyDTO>(ShopList.Shared.APIAdressess.AddProductToList, 
         new()
         {
-          { "listId", listId },
-          { "productId", productId }
+          { "ListId", listId },
+          { "ProductId", productId }
         });
       return result.IsSuccessStatusCode;
     }
@@ -74,8 +74,8 @@ namespace ShopList.Client.Services
       var result = await _apiHelper.PostAsync<ListOfProductsToBuyDTO>(ShopList.Shared.APIAdressess.RemoveProductFromList, 
         new()
         {
-          { "listId", listId },
-          { "productId", productId }
+          { "ListId", listId },
+          { "ProductId", productId }
         });
       return result.IsSuccessStatusCode;
     }

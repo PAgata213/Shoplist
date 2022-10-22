@@ -1,15 +1,74 @@
 ﻿@page "/listofproducts/{ListId:int}";
+@using AutoMapper
 @using ShopList.Client.Interfaces
 @using ShopList.Shared.DataModels.DTOs
+@using ShopList.Shared.DataModels.ShopList
 
 @inject IShopItemsToBuyService _shopItemsToBuyService
+@inject IProductsService _productsService
+@inject IMapper _mapper
 
 <h3>ListOfProducts</h3>
+
 @if (_listOfProductsToBuyDTO != null)
 {
     <h2>@_listOfProductsToBuyDTO.ListName</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nazwa produktu</th>
+                <th>Opis</th>
+                <th>Ilość</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in _listOfProductsToBuyDTO.ProductsToBuy)
+            {
+                <tr>
+                    <th style="width: 30%">@product.ProductName</th>
+                    <th style="width: 30%">@product.Description</th>
+                    <th style="width: 15%">Ilość</th>
+                    <th style="width: 15%">
+                        <div>
+                            <button type="button" class="btn btn-danger" @onclick="() => RemoveProductFromList(product)">-</button>
+                        </div>
+                    </th>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
 
+@if (_productsDTO != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nazwa produktu</th>
+                <th>Opis</th>
+                <th>Ilość</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in _productsDTO)
+            {
+                <tr>
+                    <th style="width: 30%">@product.ProductName</th>
+                    <th style="width: 30%">@product.Description</th>
+                    <th style="width: 15%">12</th>
+                    <th style="width: 15%">
+                        <div>
+                            <button type="button" class="btn btn-success" @onclick="() => AddProductToList(product)">+</button>
+                        </div>
+                    </th>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 @if (_listOfProductsToBuyDTO == null)
 {
@@ -29,6 +88,8 @@
 
     private ListOfProductsToBuyDTO? _listOfProductsToBuyDTO;
 
+    private List<ProductDTO> _productsDTO;
+
     private bool _badId = false;
 
     protected override async Task OnInitializedAsync()
@@ -39,6 +100,40 @@
             return;
         }
         _listOfProductsToBuyDTO = await _shopItemsToBuyService.GetListOfProductsToBuyAsync(ListId!);
+
+        var products = await _productsService.GetProductsAsync();
+        if (products.Any())
+        {
+            var productsDTO = _productsService.MapToDTOs(_mapper, products);
+            var productsIds = productsDTO.Select(s => s.Id).Except(_listOfProductsToBuyDTO!.ProductsToBuy.Select(s => s.Id));
+            _productsDTO = productsDTO.Where(x => productsIds.Contains(x.Id)).ToList();
+        }
+        else
+        {
+            _productsDTO = new(0);
+        }
         await base.OnInitializedAsync();
+    }
+
+    private async Task AddProductToList(ProductDTO productDTO)
+    {
+        var result = await _shopItemsToBuyService.AddProductToProductsListAsync(ListId, productDTO.Id);
+
+        if (result)
+        {
+            _listOfProductsToBuyDTO!.ProductsToBuy.Add(productDTO);
+            _productsDTO.Remove(productDTO);
+        }
+    }
+
+    private async Task RemoveProductFromList(ProductDTO productDTO)
+    {
+        var result = await _shopItemsToBuyService.RemoveProductFromProductsListAsync(ListId, productDTO.Id);
+
+        if (result)
+        {
+            _productsDTO.Add(productDTO);
+            _listOfProductsToBuyDTO!.ProductsToBuy.Remove(productDTO);
+        }
     }
 }
