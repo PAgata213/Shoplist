@@ -13,6 +13,6 @@ namespace ShopList.Shared.DataModels.ShopList
     [MaxLength(50)]
     public string ListName { get; set; }
 
-    public virtual ICollection<Product> ProductsToBuy { get; set; }
+    public virtual ICollection<ProductToBuy> ProductsToBuy { get; set; }
   }
 }

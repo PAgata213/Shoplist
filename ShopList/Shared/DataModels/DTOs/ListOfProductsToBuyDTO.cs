@@ -15,6 +15,6 @@ namespace ShopList.Shared.DataModels.DTOs
     [MaxLength(50)]
     public string ListName { get; set; }
 
-    public virtual ICollection<ProductDTO> ProductsToBuy { get; set; }
+    public virtual ICollection<ProductToBuyDTO> ProductsToBuy { get; set; }
   }
 }
