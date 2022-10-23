@@ -42,6 +42,9 @@ namespace ShopList.Shared.Helpers
 
       CreateMap<ListOfProductsToBuyDTO, ListOfProductsToBuy>();
       CreateMap<ListOfProductsToBuy, ListOfProductsToBuyDTO>();
+
+      CreateMap<ProductPricing, ProductPricingDTO>();
+      CreateMap<ProductPricingDTO, ProductPricing>();
     }
   }
 }
