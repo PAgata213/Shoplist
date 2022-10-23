@@ -19,6 +19,9 @@ namespace ShopList.DataAccess.DataAccess
       _dbContext = dbContext;
     }
 
+    public async Task<int> SaveChangedAsync() 
+      => await _dbContext.SaveChangesAsync();
+
     public IQueryable<T> GetAsQuerable<T>() where T : class 
       => _dbContext.Set<T>().AsQueryable<T>();
 

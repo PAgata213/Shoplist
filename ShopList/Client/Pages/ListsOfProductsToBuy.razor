@@ -1,0 +1,71 @@
+﻿@page "/listsofproductsTobuy"
+
+@using ShopList.Client.Interfaces
+@using ShopList.Shared.DataModels.DTOs
+
+@inject NavigationManager _navigationManager
+@inject IShopItemsToBuyService _shopItemsToBuyService
+
+<h3>Lists Of Products To Buy</h3>
+
+@if (_listsOfProductsToBuy == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="list-group list-group-numbered">
+        @foreach (var listOfProducts in _listsOfProductsToBuy)
+        {
+            <div class="row">
+                <div class="col">
+                    <button type="button" class="list-group-item list-group-item-action" @onclick="() => NavigateToListOfProducts(listOfProducts.Id)">@listOfProducts.ListName</button>
+                </div>
+                <div class="col-auto">
+                    <button type="button" class="btn btn-danger" @onclick="() => DeleteRow(listOfProducts)">Usuń</button>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="col-2 mt-2">
+        <button type="button" class="btn btn-primary" data-dismiss="modal" @onclick="() => AddNewList()">New List</button>
+    </div>
+}
+
+<ShopList.Client.Modals.NewShopListModal @ref="_newShopListModal"
+                                         OnSaveSuccess="@RefreshData" />
+
+@code
+{
+    private ShopList.Client.Modals.NewShopListModal _newShopListModal { get; set; }
+    private List<ListOfProductsToBuyDTO> _listsOfProductsToBuy;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshData();
+        await base.OnInitializedAsync();
+    }
+
+    private void NavigateToListOfProducts(int listId)
+    => _navigationManager.NavigateTo($"/listofproducts/{listId}");
+
+    private void AddNewList()
+    => _newShopListModal.Open();
+
+    private async Task DeleteRow(ListOfProductsToBuyDTO item)
+    {
+        var id = item.Id;
+        var result = await _shopItemsToBuyService.RemoveListOfProductsToBuyAsync(item);
+        if (result)
+        {
+            _listsOfProductsToBuy.Remove(item);
+        }
+    }
+
+    private async Task RefreshData()
+    {
+        var data = await _shopItemsToBuyService.GetListOfProductsToBuyAsync();
+        _listsOfProductsToBuy = data.ToList();
+    }
+}

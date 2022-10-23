@@ -8,17 +8,15 @@ namespace ShopList.Client.Services
   public class ProductsService : IProductsService
   {
     private readonly IAPIHelper _apiHelper;
-    private readonly IMapper _mapper;
 
     public ProductsService(IAPIHelper apiHelper, IMapper mapper)
     {
       _apiHelper = apiHelper;
-      _mapper = mapper;
     }
 
     public async Task<IEnumerable<Product>> GetProductsAsync()
     {
-      var content = await _apiHelper.GetAsync<IEnumerable<Product>>(ShopList.Shared.APIAdressess.GetProductss);
+      var content = await _apiHelper.GetAsync<IEnumerable<Product>>(ShopList.Shared.APIAdressess.GetProducts);
       return content.DataModel ?? Enumerable.Empty<Product>();
     }
 
@@ -54,6 +52,14 @@ namespace ShopList.Client.Services
     {
       var result = await _apiHelper.PostAsync<Product, Product>(ShopList.Shared.APIAdressess.RemoveProduct, shop);
       return result.IsSuccessStatusCode;
+    }
+
+    public IEnumerable<ProductDTO> MapToDTOs(IMapper mapper, IEnumerable<Product> products)
+    {
+      return products.Select(p =>
+      {
+        return mapper.Map<Product, ProductDTO>(p);
+      });
     }
   }
 }

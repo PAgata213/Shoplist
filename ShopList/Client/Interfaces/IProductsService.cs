@@ -1,4 +1,5 @@
-﻿using ShopList.Shared.DataModels.DTOs;
+﻿using AutoMapper;
+using ShopList.Shared.DataModels.DTOs;
 using ShopList.Shared.DataModels.ShopList;
 
 namespace ShopList.Client.Interfaces
@@ -10,5 +11,6 @@ namespace ShopList.Client.Interfaces
     Task<Product?> GetProductAsync(int id);
     Task<IEnumerable<Product>> GetProductsAsync();
     Task<bool> RemoveProductAsync(Product shop);
+    IEnumerable<ProductDTO> MapToDTOs(IMapper mapper, IEnumerable<Product> products);
   }
 }

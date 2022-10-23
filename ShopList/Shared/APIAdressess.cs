@@ -81,7 +81,7 @@ namespace ShopList.Shared
     /// Get all ShopItems
     /// Request Method : GET
     /// </summary>
-    public const string GetProductss = "/api/shops/items/";
+    public const string GetProducts = "/api/shops/items/";
     /// <summary>
     /// Get specified ShopItem
     /// Request Method : GET
@@ -103,6 +103,45 @@ namespace ShopList.Shared
     /// </summary>
     public const string RemoveProduct = "/api/shops/items/remove/{id}";
 
+    #endregion
+
+    #region Product List API
+
+    /// <summary>
+    /// Get all ProductsLists
+    /// Request Method : GET
+    /// </summary>
+    public const string GetProductsLists = "/api/shoplists/";
+    /// <summary>
+    /// Get specified ProductsList
+    /// Request Method : GET
+    /// </summary>
+    public const string GetProductsList = "/api/shoplists/{id}/{withProducts}";
+    /// <summary>
+    /// Create new ProductsList from given model
+    /// Request Method : POST
+    /// </summary>
+    public const string CreateProductsList = "/api/shoplists/create/";
+    /// <summary>
+    /// Update specified ProductsList from given model
+    /// Request Method : PUT
+    /// </summary>
+    public const string UpdateProductsList = "/api/shoplists/update/";
+    /// <summary>
+    /// Remove specified ProductsList
+    /// Request Method : POST
+    /// </summary>
+    public const string RemoveProductsList = "/api/shoplists/remove/";
+    /// <summary>
+    /// Add given Product to ProductsList
+    /// Request Method : POST
+    /// </summary>
+    public const string AddProductToList = "/api/shoplists/items/add/{ListId}/{ProductId}/{Amount}";
+    /// <summary>
+    /// Remove given Product from ProductsList
+    /// Request Method : POST
+    /// </summary>
+    public const string RemoveProductFromList = "/api/shoplists/items/remove/{ListId}/{ProductId}";
     #endregion
   }
 }

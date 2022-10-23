@@ -12,5 +12,6 @@ public static class APIHelper
     app.RegisterItemsAPI();
     app.RegisterShopBrandsAPI();
     app.RegisterShopsAPI();
+    app.RegisterShopListAPI();
   }
 }

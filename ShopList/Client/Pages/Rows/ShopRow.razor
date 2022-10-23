@@ -22,18 +22,18 @@
     [Parameter] public EventCallback<Shop> RowDeleteClicked { get; set; }
     [Parameter] public EventCallback<Shop> RowEditClicked { get; set; }
 
-    private async void RowClicked()
+    private async Task RowClicked()
     {
         RowState.IsSelected = !RowState.IsSelected;
         await RowSelectionChanged.InvokeAsync(RowState);
     }
 
-    private async void DeleteRow()
+    private async Task DeleteRow()
     {
         await RowDeleteClicked.InvokeAsync(RowState.Item);
     }
 
-    private async void EditRow()
+    private async Task EditRow()
     {
         await RowEditClicked.InvokeAsync(RowState.Item);
     }

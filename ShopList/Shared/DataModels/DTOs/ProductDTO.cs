@@ -15,5 +15,8 @@ namespace ShopList.Shared.DataModels.DTOs
     public string ProductName { get; set; }
 
     public string? Description { get; set; }
+
+    public double Amount { get; set; }
+    public int MyProperty { get; set; }
   }
 }

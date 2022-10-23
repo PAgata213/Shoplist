@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShopList.DataAccess.DataContexts;
 
@@ -11,18 +12,20 @@ using ShopList.DataAccess.DataContexts;
 namespace ShopList.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221007090622_AddListOfProductsToBuy")]
+    partial class AddListOfProductsToBuy
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.0-rc.2.22472.11")
+                .HasAnnotation("ProductVersion", "7.0.0-rc.1.22426.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ListOfProductsToBuyProductToBuy", b =>
+            modelBuilder.Entity("ListOfProductsToBuyProduct", b =>
                 {
                     b.Property<int>("ListsOfProductsToBuyId")
                         .HasColumnType("int");
@@ -34,7 +37,7 @@ namespace ShopList.DataAccess.Migrations
 
                     b.HasIndex("ProductsToBuyId");
 
-                    b.ToTable("ListOfProductsToBuyProductToBuy");
+                    b.ToTable("ListOfProductsToBuyProduct");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -283,27 +286,6 @@ namespace ShopList.DataAccess.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("ShopList.Shared.DataModels.ShopList.ProductToBuy", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<double>("Amount")
-                        .HasColumnType("float");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductToBuy");
-                });
-
             modelBuilder.Entity("ShopList.Shared.DataModels.ShopList.Shop", b =>
                 {
                     b.Property<int>("Id")
@@ -355,7 +337,7 @@ namespace ShopList.DataAccess.Migrations
                     b.ToTable("ShopBrands");
                 });
 
-            modelBuilder.Entity("ListOfProductsToBuyProductToBuy", b =>
+            modelBuilder.Entity("ListOfProductsToBuyProduct", b =>
                 {
                     b.HasOne("ShopList.Shared.DataModels.ShopList.ListOfProductsToBuy", null)
                         .WithMany()
@@ -363,7 +345,7 @@ namespace ShopList.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("ShopList.Shared.DataModels.ShopList.ProductToBuy", null)
+                    b.HasOne("ShopList.Shared.DataModels.ShopList.Product", null)
                         .WithMany()
                         .HasForeignKey("ProductsToBuyId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -421,17 +403,6 @@ namespace ShopList.DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ShopList.Shared.DataModels.ShopList.ProductToBuy", b =>
-                {
-                    b.HasOne("ShopList.Shared.DataModels.ShopList.Product", "Product")
-                        .WithMany("ProductsToBuy")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("ShopList.Shared.DataModels.ShopList.Shop", b =>
                 {
                     b.HasOne("ShopList.Shared.DataModels.ShopList.ShopBrand", "ShopBrand")
@@ -441,11 +412,6 @@ namespace ShopList.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("ShopBrand");
-                });
-
-            modelBuilder.Entity("ShopList.Shared.DataModels.ShopList.Product", b =>
-                {
-                    b.Navigation("ProductsToBuy");
                 });
 #pragma warning restore 612, 618
         }
