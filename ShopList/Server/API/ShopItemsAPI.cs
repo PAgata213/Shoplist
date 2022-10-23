@@ -13,10 +13,10 @@ public static class ShopItemsAPI
 {
   public static void RegisterItemsAPI(this WebApplication app)
   {
-    app.MapGet(ShopList.Shared.APIAdressess.GetProductss, GetShopItems);
+    app.MapGet(ShopList.Shared.APIAdressess.GetProducts, GetShopItems);
     app.MapGet(ShopList.Shared.APIAdressess.GetProduct, GetShopItem);
     app.MapPost(ShopList.Shared.APIAdressess.CreateProduct, CreateShopItem);
-    app.MapPut(ShopList.Shared.APIAdressess.CreateProduct, UpdateShopItem);
+    app.MapPut(ShopList.Shared.APIAdressess.UpdateProduct, UpdateShopItem);
     app.MapPost(ShopList.Shared.APIAdressess.RemoveProduct, RemoveShopItem);
   }
 

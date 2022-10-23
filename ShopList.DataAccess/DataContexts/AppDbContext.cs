@@ -36,5 +36,6 @@ namespace ShopList.DataAccess.DataContexts
     public DbSet<Product> Products { get; set; }
     public DbSet<ShopBrand> ShopBrands { get; set; }
     public DbSet<Shop> Shops { get; set; }
+    public DbSet<ListOfProductsToBuy> ListsOfProductsToBuy { get; set; }
   }
 }

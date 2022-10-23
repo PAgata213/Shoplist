@@ -10,6 +10,8 @@ namespace ShopList.Shared.Interfaces
 {
   public interface IDataAccessHelper
   {
+    Task<int> SaveChangedAsync(); 
+
     IQueryable<T> GetAsQuerable<T>() where T : class;
 
     Task<IEnumerable<T>> GetAsync<T>() where T : class;

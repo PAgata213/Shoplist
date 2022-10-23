@@ -1,0 +1,163 @@
+﻿@page "/listofproducts/{ListId:int}";
+@using AutoMapper
+@using ShopList.Client.Interfaces
+@using ShopList.Shared.DataModels.DTOs
+@using ShopList.Shared.DataModels.ShopList
+@using ShopList.Client.Components
+
+@inject IShopItemsToBuyService _shopItemsToBuyService
+@inject IProductsService _productsService
+@inject IMapper _mapper
+
+<h3>ListOfProducts</h3>
+
+@if (_listOfProductsToBuyDTO != null)
+{
+    <h2>@_listOfProductsToBuyDTO.ListName</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="width: 30%">Nazwa produktu</th>
+                <th style="width: 30%">Opis</th>
+                <th style="width: 10%">Ilość</th>
+                <th style="width: 15%"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var productToBuy in _listOfProductsToBuyDTO.ProductsToBuy)
+            {
+                <tr>
+                    <th style="width: 30%">@productToBuy.Product.ProductName</th>
+                    <th style="width: 30%">@productToBuy.Product.Description</th>
+                    <th style="width: 10%">@productToBuy.Amount</th>
+                    <th style="width: 15%">
+                        <div>
+                            <button type="button" class="btn btn-danger" @onclick="() => RemoveProductFromList(productToBuy)">-</button>
+                        </div>
+                    </th>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (_productsToBuyDTO != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="width: 30%">Nazwa produktu</th>
+                <th style="width: 30%">Opis</th>
+                <th style="width: 10%">Ilość</th>
+                <th style="width: 15%"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in _productsToBuyDTO)
+            {
+                <tr>
+                    <th>@product.Product.ProductName</th>
+                    <th>@product.Product.Description</th>
+                    <th>
+                        <div>
+                            <InputNum class="form-control" Min="1" @bind-Value="product.Amount" />
+                        </div>
+                    </th>
+                    <th>
+                        <div>
+                            <button type="button" class="btn btn-success" @onclick="() => AddProductToList(product)">+</button>
+                        </div>
+                    </th>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (_listOfProductsToBuyDTO == null)
+{
+    if (_badId)
+    {
+        <p><em>Bad parameter</em></p>
+        return;
+    }
+
+    <p><em>Loading...</em></p>
+}
+
+@code
+{
+    [Parameter]
+    public int ListId { get; set; }
+
+    private ListOfProductsToBuyDTO? _listOfProductsToBuyDTO;
+
+    private List<ProductToBuyDTO> _productsToBuyDTO;
+
+    private bool _badId = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (ListId <= 0)
+        {
+            _badId = true;
+            return;
+        }
+        _listOfProductsToBuyDTO = await _shopItemsToBuyService.GetListOfProductsToBuyAsync(ListId!);
+
+        var products = await _productsService.GetProductsAsync();
+        if (products.Any())
+        {
+            var productsToBuyDTO = products.Select(p =>
+            {
+                var product = _mapper.Map<ProductToBuyDTO>(p);
+                product.Amount = 1;
+                return product;
+            });
+            var productsIds = productsToBuyDTO.Select(s => s.ProductId).Except(_listOfProductsToBuyDTO!.ProductsToBuy.Select(s => s.ProductId));
+            _productsToBuyDTO = productsToBuyDTO.Where(x => productsIds.Contains(x.ProductId)).ToList();
+        }
+        else
+        {
+            _productsToBuyDTO = new(0);
+        }
+        await base.OnInitializedAsync();
+    }
+
+    private void OnValueChange(ChangeEventArgs e, ProductToBuyDTO product)
+    {
+        if (!double.TryParse(e.Value?.ToString(), out var result) || result <= 0)
+        {
+            product.Amount = 1;
+            StateHasChanged();
+        }
+    }
+
+    private async Task AddProductToList(ProductToBuyDTO productToBuyDTO)
+    {
+        if (productToBuyDTO.Amount <= 0)
+        {
+            productToBuyDTO.Amount = 1;
+        }
+        var result = await _shopItemsToBuyService.AddProductToProductsListAsync(ListId, productToBuyDTO.ProductId, productToBuyDTO.Amount);
+
+        if (result)
+        {
+            _listOfProductsToBuyDTO!.ProductsToBuy.Add(productToBuyDTO);
+            _productsToBuyDTO.Remove(productToBuyDTO);
+        }
+    }
+
+    private async Task RemoveProductFromList(ProductToBuyDTO productToBuyDTO)
+    {
+        var result = await _shopItemsToBuyService.RemoveProductFromProductsListAsync(ListId, productToBuyDTO.ProductId);
+
+        if (result)
+        {
+            productToBuyDTO.Amount = 1;
+            _productsToBuyDTO.Add(productToBuyDTO);
+            _listOfProductsToBuyDTO!.ProductsToBuy.Remove(productToBuyDTO);
+        }
+    }
+}
