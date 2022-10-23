@@ -3,6 +3,7 @@
 @using ShopList.Client.Interfaces
 @using ShopList.Shared.DataModels.DTOs
 @using ShopList.Shared.DataModels.ShopList
+@using ShopList.Client.Components
 
 @inject IShopItemsToBuyService _shopItemsToBuyService
 @inject IProductsService _productsService
@@ -17,10 +18,10 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Nazwa produktu</th>
-                <th>Opis</th>
-                <th>Ilość</th>
-                <th></th>
+                <th style="width: 30%">Nazwa produktu</th>
+                <th style="width: 30%">Opis</th>
+                <th style="width: 10%">Ilość</th>
+                <th style="width: 15%"></th>
             </tr>
         </thead>
         <tbody>
@@ -29,7 +30,7 @@
                 <tr>
                     <th style="width: 30%">@productToBuy.Product.ProductName</th>
                     <th style="width: 30%">@productToBuy.Product.Description</th>
-                    <th style="width: 15%">@productToBuy.Amount</th>
+                    <th style="width: 10%">@productToBuy.Amount</th>
                     <th style="width: 15%">
                         <div>
                             <button type="button" class="btn btn-danger" @onclick="() => RemoveProductFromList(productToBuy)">-</button>
@@ -41,25 +42,29 @@
     </table>
 }
 
-@if (_productsDTO != null)
+@if (_productsToBuyDTO != null)
 {
     <table class="table">
         <thead>
             <tr>
-                <th>Nazwa produktu</th>
-                <th>Opis</th>
-                <th>Ilość</th>
-                <th></th>
+                <th style="width: 30%">Nazwa produktu</th>
+                <th style="width: 30%">Opis</th>
+                <th style="width: 10%">Ilość</th>
+                <th style="width: 15%"></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var product in _productsDTO)
+            @foreach (var product in _productsToBuyDTO)
             {
                 <tr>
-                    <th style="width: 30%">@product.ProductName</th>
-                    <th style="width: 30%">@product.Description</th>
-                    <th style="width: 15%">12</th>
-                    <th style="width: 15%">
+                    <th>@product.Product.ProductName</th>
+                    <th>@product.Product.Description</th>
+                    <th>
+                        <div>
+                            <InputNum class="form-control" Min="1" @bind-Value="product.Amount" />
+                        </div>
+                    </th>
+                    <th>
                         <div>
                             <button type="button" class="btn btn-success" @onclick="() => AddProductToList(product)">+</button>
                         </div>
@@ -88,7 +93,7 @@
 
     private ListOfProductsToBuyDTO? _listOfProductsToBuyDTO;
 
-    private List<ProductDTO> _productsDTO;
+    private List<ProductToBuyDTO> _productsToBuyDTO;
 
     private bool _badId = false;
 
@@ -104,25 +109,43 @@
         var products = await _productsService.GetProductsAsync();
         if (products.Any())
         {
-            var productsDTO = _productsService.MapToDTOs(_mapper, products);
-            var productsIds = productsDTO.Select(s => s.Id).Except(_listOfProductsToBuyDTO!.ProductsToBuy.Select(s => s.ProductId));
-            _productsDTO = productsDTO.Where(x => productsIds.Contains(x.Id)).ToList();
+            var productsToBuyDTO = products.Select(p =>
+            {
+                var product = _mapper.Map<ProductToBuyDTO>(p);
+                product.Amount = 1;
+                return product;
+            });
+            var productsIds = productsToBuyDTO.Select(s => s.ProductId).Except(_listOfProductsToBuyDTO!.ProductsToBuy.Select(s => s.ProductId));
+            _productsToBuyDTO = productsToBuyDTO.Where(x => productsIds.Contains(x.ProductId)).ToList();
         }
         else
         {
-            _productsDTO = new(0);
+            _productsToBuyDTO = new(0);
         }
         await base.OnInitializedAsync();
     }
 
-    private async Task AddProductToList(ProductDTO productDTO)
+    private void OnValueChange(ChangeEventArgs e, ProductToBuyDTO product)
     {
-        var result = await _shopItemsToBuyService.AddProductToProductsListAsync(ListId, productDTO.Id);
+        if (!double.TryParse(e.Value?.ToString(), out var result) || result <= 0)
+        {
+            product.Amount = 1;
+            StateHasChanged();
+        }
+    }
+
+    private async Task AddProductToList(ProductToBuyDTO productToBuyDTO)
+    {
+        if (productToBuyDTO.Amount <= 0)
+        {
+            productToBuyDTO.Amount = 1;
+        }
+        var result = await _shopItemsToBuyService.AddProductToProductsListAsync(ListId, productToBuyDTO.ProductId, productToBuyDTO.Amount);
 
         if (result)
         {
-            _listOfProductsToBuyDTO!.ProductsToBuy.Add(_mapper.Map<ProductToBuyDTO>(productDTO));
-            _productsDTO.Remove(productDTO);
+            _listOfProductsToBuyDTO!.ProductsToBuy.Add(productToBuyDTO);
+            _productsToBuyDTO.Remove(productToBuyDTO);
         }
     }
 
@@ -132,7 +155,8 @@
 
         if (result)
         {
-            _productsDTO.Add(_mapper.Map<ProductDTO>(productToBuyDTO));
+            productToBuyDTO.Amount = 1;
+            _productsToBuyDTO.Add(productToBuyDTO);
             _listOfProductsToBuyDTO!.ProductsToBuy.Remove(productToBuyDTO);
         }
     }

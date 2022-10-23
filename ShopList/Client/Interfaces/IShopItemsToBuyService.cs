@@ -5,12 +5,12 @@ namespace ShopList.Client.Interfaces
 {
   public interface IShopItemsToBuyService
   {
-    Task<bool> AddProductToProductsListAsync(int listId, int productId);
-    Task<ListOfProductsToBuyDTO> CreateListOfProductsToBuyAsync(ListOfProductsToBuyDTO listOfProductsToBuyDTO);
     Task<IEnumerable<ListOfProductsToBuyDTO>> GetListOfProductsToBuyAsync();
     Task<ListOfProductsToBuyDTO?> GetListOfProductsToBuyAsync(int id, bool withProducts = true);
+    Task<ListOfProductsToBuyDTO> CreateListOfProductsToBuyAsync(ListOfProductsToBuyDTO listOfProductsToBuyDTO);
+    Task<Product> UpdateListOfProductsToBuyAsync(ListOfProductsToBuyDTO listOfProductsToBuyDTO);
     Task<bool> RemoveListOfProductsToBuyAsync(ListOfProductsToBuyDTO listOfProductsToBuyDTO);
     Task<bool> RemoveProductFromProductsListAsync(int listId, int productId);
-    Task<Product> UpdateListOfProductsToBuyAsync(ListOfProductsToBuyDTO listOfProductsToBuyDTO);
+    Task<bool> AddProductToProductsListAsync(int listId, int productId, double amount);
   }
 }

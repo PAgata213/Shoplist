@@ -27,6 +27,10 @@ namespace ShopList.Shared.Helpers
         .ForMember(dest => dest.ProductId, src => src.MapFrom(s => s.Id))
         .ForMember(dest => dest.Product, src => src.MapFrom(s => s));
 
+      CreateMap<Product, ProductToBuyDTO>()
+        .ForMember(dest => dest.ProductId, src => src.MapFrom(s => s.Id))
+        .ForMember(dest => dest.Product, src => src.MapFrom(s => s));
+
       CreateMap<ProductToBuyDTO, ProductToBuy>();
       CreateMap<ProductToBuy, ProductToBuyDTO>();
 

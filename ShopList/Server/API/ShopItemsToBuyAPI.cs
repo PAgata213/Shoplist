@@ -115,16 +115,16 @@ public static class ShopItemsToBuyAPI
     return TypedResults.Ok(new Response<ListOfProductsToBuyDTO>());
   }
 
-  private static async Task<IResult> AddProductToList(IDataAccessHelper dataAccessHelper, IMapper mapper, int ListId, int productId)
+  private static async Task<IResult> AddProductToList(IDataAccessHelper dataAccessHelper, IMapper mapper, int listId, int productId, double amount)
   {
-    if (ListId <= 0 || productId <= 0)
+    if (listId <= 0 || productId <= 0)
     {
       return TypedResults.BadRequest("Selected List or Product does not exists");
     }
 
     var listOfProducts = await dataAccessHelper.GetAsQuerable<ListOfProductsToBuy>()
       .Include(p => p.ProductsToBuy)
-      .FirstOrDefaultAsync(p => p.Id == ListId);
+      .FirstOrDefaultAsync(p => p.Id == listId);
     if (listOfProducts == null)
     {
       return TypedResults.BadRequest("Selected ListOfProductsToBuy does not exists");
@@ -137,7 +137,7 @@ public static class ShopItemsToBuyAPI
       return TypedResults.BadRequest("Selected Product does not exists");
     }
 
-    listOfProducts.ProductsToBuy.Add(new() { Product = product });
+    listOfProducts.ProductsToBuy.Add(new() { Product = product, Amount = amount });
     await dataAccessHelper.SaveChangedAsync();
     return TypedResults.Ok(new Response<ListOfProductsToBuyDTO> { DataModel = MapListOfProductsToBuyToDTO(mapper, listOfProducts) });
   }

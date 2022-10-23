@@ -15,7 +15,7 @@ public static class ShopBrandsAPI
     app.MapGet(ShopList.Shared.APIAdressess.GetShopBrand, GetShopBrand);
     app.MapPost(ShopList.Shared.APIAdressess.CreateShopBrand, CreateShopBrand);
     app.MapPut(ShopList.Shared.APIAdressess.UpdateShopBrand, UpdateShopBrand);
-    app.MapPost(ShopList.Shared.APIAdressess.RemoveShopBrand, RemoveShopBrand);     
+    app.MapPost(ShopList.Shared.APIAdressess.RemoveShopBrand, RemoveShopBrand);
   }
 
   private static async Task<Response<IEnumerable<ShopBrand>>> GetShopBrands(IDataAccessHelper dataAccessHelper)

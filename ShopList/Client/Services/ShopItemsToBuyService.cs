@@ -58,13 +58,14 @@ namespace ShopList.Client.Services
       return result.IsSuccessStatusCode;
     }
 
-    public async Task<bool> AddProductToProductsListAsync(int listId, int productId)
+    public async Task<bool> AddProductToProductsListAsync(int listId, int productId, double amount)
     {
       var result = await _apiHelper.PostAsync<ListOfProductsToBuyDTO>(ShopList.Shared.APIAdressess.AddProductToList, 
         new()
         {
           { "ListId", listId },
-          { "ProductId", productId }
+          { "ProductId", productId },
+          { "Amount", amount }
         });
       return result.IsSuccessStatusCode;
     }
