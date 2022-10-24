@@ -153,6 +153,16 @@ namespace ShopList.Shared
     /// </summary>
     public const string GetProductsPricing = $"{_productPricingPath}/";
     /// <summary>
+    /// Get specified Product pricing
+    /// Request Method : GET
+    /// </summary>
+    public const string GetProductPricing = $"{_productPricingPath}/{{id}}";
+    /// <summary>
+    /// Get specified Product pricing
+    /// Request Method : GET
+    /// </summary>
+    public const string GetProductPricingForShopAndProduct = $"{_productPricingPath}/{{shopId}}/{{productId}}";
+    /// <summary>
     /// Create new Pricing for given product in given shop
     /// Request Method : POST
     /// </summary>
