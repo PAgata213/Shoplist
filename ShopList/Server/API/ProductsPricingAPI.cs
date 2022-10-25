@@ -15,6 +15,7 @@ namespace ShopList.Server.API
 		public static void RegisterProductsPricingAPI(this WebApplication app)
 		{
 			app.MapGet(APIAdressess.GetProductsPricing, GetProductsPricingAsync);
+			app.MapPost(APIAdressess.GetProductPricingForSelectedProducts, GetProductPricingForSelectedProductsAsync);
 			app.MapGet(APIAdressess.GetProductPricing, GetProductPricingAsync);
 			app.MapGet(APIAdressess.GetProductPricingForShopAndProduct, GetProductPricingForShopAndProductAsync);
 			app.MapPost(APIAdressess.CreateProductPricing, AddProductsPricingAsync);
@@ -25,6 +26,12 @@ namespace ShopList.Server.API
 		private static async Task<IResult> GetProductsPricingAsync(IDataAccessHelper dataAccessHelper, IMapper mapper)
 		{
 			var data = await dataAccessHelper.GetAsync<ProductPricing>();
+			return TypedResults.Ok(new Response<IEnumerable<ProductPricingDTO>> { DataModel = data.Select(mapper.Map<ProductPricingDTO>) });
+		}
+
+		private static async Task<IResult> GetProductPricingForSelectedProductsAsync(IDataAccessHelper dataAccessHelper, IMapper mapper, ListTransferDTO<int> ids)
+		{
+			var data = await dataAccessHelper.GetAsQuerable<ProductPricing>().Where(s => ids.List.Contains(s.Id)).ToListAsync();
 			return TypedResults.Ok(new Response<IEnumerable<ProductPricingDTO>> { DataModel = data.Select(mapper.Map<ProductPricingDTO>) });
 		}
 

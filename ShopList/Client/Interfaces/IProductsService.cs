@@ -10,7 +10,8 @@ namespace ShopList.Client.Interfaces
     Task<Product> UpdateProductAsync(ProductDTO productDTO);
     Task<Product?> GetProductAsync(int id);
     Task<IEnumerable<Product>> GetProductsAsync();
+    Task<IEnumerable<Product>> GetProductsAsync(IEnumerable<int> products);
     Task<bool> RemoveProductAsync(Product shop);
-    IEnumerable<ProductDTO> MapToDTOs(IMapper mapper, IEnumerable<Product> products);
+    IEnumerable<ProductDTO> MapToDTOs(IEnumerable<Product> products);
   }
 }

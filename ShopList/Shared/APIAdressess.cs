@@ -88,6 +88,11 @@ namespace ShopList.Shared
     /// </summary>
     public const string GetProduct = "/api/shops/items/{id}";
     /// <summary>
+    /// Get specified ShopItem
+    /// Request Method : POST
+    /// </summary>
+    public const string GetShopItemsWithGivenId = "/api/shops/items/many/";
+    /// <summary>
     /// Create new ShopItem from given model
     /// Request Method : POST
     /// </summary>
@@ -145,13 +150,18 @@ namespace ShopList.Shared
     #endregion
 
     #region ProductsPricing
-
+    
     private const string _productPricingPath = "/api/shops/items/pricing";
     /// <summary>
     /// Get all Products pricing
     /// Request Method : GET
     /// </summary>
     public const string GetProductsPricing = $"{_productPricingPath}/";
+    /// <summary>
+    /// Get specified Product pricing
+    /// Request Method : POST
+    /// </summary>
+    public const string GetProductPricingForSelectedProducts = $"{_productPricingPath}/many/";
     /// <summary>
     /// Get specified Product pricing
     /// Request Method : GET

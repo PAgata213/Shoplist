@@ -6,7 +6,7 @@
 
 @inject IProductsService _productsService
 @inject IShopsService _shopsService
-@inject IProductsPricingService _iproductsPricingService
+@inject IProductsPricingService _productsPricingService
 
 <h3>ProductsPricing</h3>
 
@@ -59,34 +59,13 @@ else
 	private ShopList.Client.Modals.NewPriceModal _newProductPriceModal;
 
 	protected override async Task OnInitializedAsync()
-	{
-		await RefreshData();
-	}
+	=> await RefreshData();
 
 	private async Task RefreshData()
 	{
-		var products = await _productsService.GetProductsAsync();
-		var shops = await _shopsService.GetShopsAsync();
-		var pricings = await _iproductsPricingService.GetProductsPricingAsync();
-
-		Products = products.OrderBy(p => p.ProductName);
-		Shops = shops.OrderBy(s => s.Id);
-
-		if(!products.Any() || !shops.Any())
-		{
-			ProductForPricings = Enumerable.Empty<ProductForPricing>();
-			return;
-		}
-
-		ProductForPricings = Products.Select(p => new ProductForPricing
-		{
-			Product = p,
-			InShopProductPricings = shops.Select(s => new InShopProductPricing
-			{
-				ShopId = s.Id,
-				Price = pricings.FirstOrDefault(x => x.ProductId == p.Id && x.ShopId == s.Id)?.Price ?? 0
-			})
-		});
+		Shops = await _shopsService.GetShopsAsync();
+		Products = await _productsService.GetProductsAsync();
+		ProductForPricings = await _productsPricingService.GeneratePricingsForProducts(null, Products, Shops);
 	}
 
 	private async Task ShowNewPricingModal()
