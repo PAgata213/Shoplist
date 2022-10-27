@@ -7,6 +7,8 @@
 
 @inject IShopItemsToBuyService _shopItemsToBuyService
 @inject IProductsService _productsService
+@inject IProductsPricingService _productsPricingService
+@inject IShopsService _shopsService
 @inject IMapper _mapper
 
 <h3>ListOfProducts</h3>
@@ -15,6 +17,8 @@
 {
 	<h2>Do kupienia na liście : @_listOfProductsToBuyDTO.ListName</h2>
 
+	<button type="button" class="btn btn-primary" @onclick="ShopProductsPricing">Pokaż ceny</button>
+
 	<table class="table">
 		<thead>
 			<tr>
@@ -22,7 +26,17 @@
 				<th style="width: 10%">Opis</th>
 				<th style="width: 5%">Ilość</th>
 				<th style="width: 5%"></th>
-				<th style="width: 70%"></th>
+				@if(_showProductsPricing && _shops != null)
+				{
+					@foreach(var shop in _shops)
+					{
+						<th style="width: @ColumnWidht%">@shop.ShopBrand.ShopBrandName</th>
+					}
+				}
+				else
+				{
+					<th style="width: 70%"></th>
+				}
 			</tr>
 		</thead>
 		<tbody>
@@ -37,6 +51,29 @@
 							<button type="button" class="btn btn-danger" @onclick="() => RemoveProductFromList(productToBuy)">-</button>
 						</div>
 					</th>
+					@if(_showProductsPricing && _shops != null)
+					{
+						@foreach(var productPricing in productToBuy!.ProductPricingDTOs!)
+						{
+              @if(productPricing.Price <= 0)
+              {
+                <th style="width: @ColumnWidht%">---</th>
+                continue;
+              }
+							@if(productToBuy.Amount > 1)
+							{
+                <th style="width: @ColumnWidht%">@productPricing.Price zł/szt ( @CalculatePrice(@productToBuy.Amount, @productPricing.Price).ToString() zł)</th>
+							}
+							else
+							{
+								<th style="width: @ColumnWidht%">@productPricing.Price zł/szt</th>
+							}
+						}
+					}
+					else
+					{
+						<th style="width: 70%"></th>
+					}
 				</tr>
 			}
 		</tbody>
@@ -92,76 +129,133 @@
 
 @code
 {
-	[Parameter]
-	public int ListId { get; set; }
+    [Parameter]
+    public int ListId { get; set; }
 
-	private ListOfProductsToBuyDTO? _listOfProductsToBuyDTO;
+    private ListOfProductsToBuyDTO? _listOfProductsToBuyDTO;
 
-	private List<ProductToBuyDTO> _productsToBuyDTO;
+    private List<ProductToBuyDTO> _productsToBuyDTO;
 
-	private bool _badId = false;
+    private List<Shop> _shops;
 
-	protected override async Task OnInitializedAsync()
-	{
-		if(ListId <= 0)
-		{
-			_badId = true;
-			return;
-		}
-		_listOfProductsToBuyDTO = await _shopItemsToBuyService.GetListOfProductsToBuyAsync(ListId!);
+    private bool _badId = false;
 
-		var products = await _productsService.GetProductsAsync();
-		if(products.Any())
-		{
-			var productsToBuyDTO = products.Select(p =>
-			{
-				var product = _mapper.Map<ProductToBuyDTO>(p);
-				product.Amount = 1;
-				return product;
-			});
-			var productsIds = productsToBuyDTO.Select(s => s.ProductId).Except(_listOfProductsToBuyDTO!.ProductsToBuy.Select(s => s.ProductId));
-			_productsToBuyDTO = productsToBuyDTO.Where(x => productsIds.Contains(x.ProductId)).ToList();
-		}
-		else
-		{
-			_productsToBuyDTO = new(0);
-		}
-		await base.OnInitializedAsync();
-	}
+    private bool _showProductsPricing = false;
 
-	private void OnValueChange(ChangeEventArgs e, ProductToBuyDTO product)
-	{
-		if(!double.TryParse(e.Value?.ToString(), out var result) || result <= 0)
-		{
-			product.Amount = 1;
-			StateHasChanged();
-		}
-	}
+    private double ColumnWidht
+    {
+        get 
+        {
+            if(_columnWidth == 0)
+            {
+                _columnWidth = 70 / (double)(_shops?.Count ?? 1);
+            }
+            return _columnWidth; 
+        }
+        set { _columnWidth = value; }
+    }
+    private double _columnWidth;
 
-	private async Task AddProductToList(ProductToBuyDTO productToBuyDTO)
-	{
-		if(productToBuyDTO.Amount <= 0)
-		{
-			productToBuyDTO.Amount = 1;
-		}
-		var result = await _shopItemsToBuyService.AddProductToProductsListAsync(ListId, productToBuyDTO.ProductId, productToBuyDTO.Amount);
+    protected override async Task OnInitializedAsync()
+    {
+        if(ListId <= 0)
+        {
+            _badId = true;
+            return;
+        }
+        _listOfProductsToBuyDTO = await _shopItemsToBuyService.GetListOfProductsToBuyAsync(ListId!);
 
-		if(result)
-		{
-			_listOfProductsToBuyDTO!.ProductsToBuy.Add(productToBuyDTO);
-			_productsToBuyDTO.Remove(productToBuyDTO);
-		}
-	}
+        var products = await _productsService.GetProductsAsync();
+        if(products.Any())
+        {
+            var productsToBuyDTO = products.Select(p =>
+            {
+                var product = _mapper.Map<ProductToBuyDTO>(p);
+                product.Amount = 1;
+                return product;
+            });
+            var productsIds = productsToBuyDTO.Select(s => s.ProductId).Except(_listOfProductsToBuyDTO!.ProductsToBuy.Select(s => s.ProductId));
+            _productsToBuyDTO = productsToBuyDTO.Where(x => productsIds.Contains(x.ProductId)).ToList();
+        }
+        else
+        {
+            _productsToBuyDTO = new(0);
+        }
+        await base.OnInitializedAsync();
+    }
 
-	private async Task RemoveProductFromList(ProductToBuyDTO productToBuyDTO)
-	{
-		var result = await _shopItemsToBuyService.RemoveProductFromProductsListAsync(ListId, productToBuyDTO.ProductId);
+    private void OnValueChange(ChangeEventArgs e, ProductToBuyDTO product)
+    {
+        if(!double.TryParse(e.Value?.ToString(), out var result) || result <= 0)
+        {
+            product.Amount = 1;
+            StateHasChanged();
+        }
+    }
 
-		if(result)
-		{
-			productToBuyDTO.Amount = 1;
-			_productsToBuyDTO.Add(productToBuyDTO);
-			_listOfProductsToBuyDTO!.ProductsToBuy.Remove(productToBuyDTO);
-		}
-	}
+    private async Task AddProductToList(ProductToBuyDTO productToBuyDTO)
+    {
+        if(productToBuyDTO.Amount <= 0)
+        {
+            productToBuyDTO.Amount = 1;
+        }
+        var result = await _shopItemsToBuyService.AddProductToProductsListAsync(ListId, productToBuyDTO.ProductId, productToBuyDTO.Amount);
+
+        if(result)
+        {
+            productToBuyDTO.ProductPricingDTOs = new List<ProductPricingDTO>();
+            _listOfProductsToBuyDTO!.ProductsToBuy.Add(productToBuyDTO);
+            _productsToBuyDTO.Remove(productToBuyDTO);
+        }
+    }
+
+    private async Task RemoveProductFromList(ProductToBuyDTO productToBuyDTO)
+    {
+        var result = await _shopItemsToBuyService.RemoveProductFromProductsListAsync(ListId, productToBuyDTO.ProductId);
+
+        if(result)
+        {
+            productToBuyDTO.Amount = 1;
+            _productsToBuyDTO.Add(productToBuyDTO);
+            _listOfProductsToBuyDTO!.ProductsToBuy.Remove(productToBuyDTO);
+        }
+    }
+
+    private async Task ShopProductsPricing()
+    {
+        if(_showProductsPricing)
+        {
+            _showProductsPricing = false;
+            return;
+        }
+        _columnWidth = 0;
+        var shops = await _shopsService.GetShopsAsync();
+        _shops = shops.OrderBy(s => s.Id).ToList();
+
+        var pricing = await _productsPricingService.GetProductsPricingAsync(_listOfProductsToBuyDTO!.ProductsToBuy.Select(s => s.ProductId));
+
+        foreach(var productToBuy in _listOfProductsToBuyDTO.ProductsToBuy)
+        {
+            productToBuy.ProductPricingDTOs = new List<ProductPricingDTO>();
+
+            foreach(var shop in _shops)
+            {
+                productToBuy.ProductPricingDTOs.Add(new() { ShopId = shop.Id });
+            }
+        }
+
+        foreach(var price in pricing)
+        {
+            var itemToUpdate = _listOfProductsToBuyDTO.ProductsToBuy.Where(s => s.ProductId == price.ProductId).FirstOrDefault();
+            if(itemToUpdate != null)
+            {
+                var item = itemToUpdate!.ProductPricingDTOs!.First(s => s.ShopId == price.ShopId);
+                item.Price = price.Price;
+            }
+        }
+        _showProductsPricing = true;
+    }
+
+    private double CalculatePrice(double amount, double price) => amount * price;
+
 }

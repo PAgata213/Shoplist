@@ -31,7 +31,7 @@ namespace ShopList.Server.API
 
 		private static async Task<IResult> GetProductPricingForSelectedProductsAsync(IDataAccessHelper dataAccessHelper, IMapper mapper, ListTransferDTO<int> ids)
 		{
-			var data = await dataAccessHelper.GetAsQuerable<ProductPricing>().Where(s => ids.List.Contains(s.Id)).ToListAsync();
+			var data = await dataAccessHelper.GetAsQuerable<ProductPricing>().Where(s => ids.List.Contains(s.ProductId)).ToListAsync();
 			return TypedResults.Ok(new Response<IEnumerable<ProductPricingDTO>> { DataModel = data.Select(mapper.Map<ProductPricingDTO>) });
 		}
 
