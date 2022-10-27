@@ -27,5 +27,6 @@ namespace ShopList.Shared.DataModels.ShopList
 
     [Required(ErrorMessage = "Test")]
     public int ShopBrandId { get; set; }
+    public virtual ICollection<ProductPricing> ProductPricings { get; set; }
   }
 }

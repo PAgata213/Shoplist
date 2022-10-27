@@ -18,6 +18,7 @@ builder.Services.AddSingleton<IShopBrandsService, ShopBrandsService>();
 builder.Services.AddSingleton<IShopsService, ShopsService>();
 builder.Services.AddSingleton<IProductsService, ProductsService>();
 builder.Services.AddSingleton<IShopItemsToBuyService, ShopItemsToBuyService>();
+builder.Services.AddSingleton<IProductsPricingService, ProductsPricingService>();
 builder.Services.AddSingleton<IAPIHelper, APIHelper>();
 
 await builder.Build().RunAsync();

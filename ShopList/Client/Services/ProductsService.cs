@@ -8,15 +8,23 @@ namespace ShopList.Client.Services
   public class ProductsService : IProductsService
   {
     private readonly IAPIHelper _apiHelper;
+    private readonly IMapper _mapper;
 
     public ProductsService(IAPIHelper apiHelper, IMapper mapper)
     {
       _apiHelper = apiHelper;
+      _mapper = mapper;
     }
 
     public async Task<IEnumerable<Product>> GetProductsAsync()
     {
       var content = await _apiHelper.GetAsync<IEnumerable<Product>>(ShopList.Shared.APIAdressess.GetProducts);
+      return content.DataModel ?? Enumerable.Empty<Product>();
+    }
+
+    public async Task<IEnumerable<Product>> GetProductsAsync(IEnumerable<int> products)
+    {
+      var content = await _apiHelper.PostAsync<IEnumerable<Product>, ListTransferDTO<int>>(ShopList.Shared.APIAdressess.GetProducts, new() { List = products });
       return content.DataModel ?? Enumerable.Empty<Product>();
     }
 
@@ -29,7 +37,7 @@ namespace ShopList.Client.Services
     public async Task<Product> CreateProductAsync(ProductDTO productDTO)
     {
       var result = await _apiHelper.PostAsync<Product, ProductDTO>(ShopList.Shared.APIAdressess.CreateProduct, productDTO);
-      if (!result.IsSuccessStatusCode)
+      if(!result.IsSuccessStatusCode)
       {
         throw new Exception(result?.ErrorMessage ?? result!.StatusCode.ToString());
       }
@@ -40,7 +48,7 @@ namespace ShopList.Client.Services
     public async Task<Product> UpdateProductAsync(ProductDTO productDTO)
     {
       var result = await _apiHelper.PutAsync<Product, ProductDTO>(ShopList.Shared.APIAdressess.UpdateProduct, productDTO);
-      if (!result.IsSuccessStatusCode)
+      if(!result.IsSuccessStatusCode)
       {
         throw new Exception(result?.ErrorMessage ?? result!.StatusCode.ToString());
       }
@@ -54,12 +62,9 @@ namespace ShopList.Client.Services
       return result.IsSuccessStatusCode;
     }
 
-    public IEnumerable<ProductDTO> MapToDTOs(IMapper mapper, IEnumerable<Product> products)
+    public IEnumerable<ProductDTO> MapToDTOs(IEnumerable<Product> products)
     {
-      return products.Select(p =>
-      {
-        return mapper.Map<Product, ProductDTO>(p);
-      });
+      return products.Select(_mapper.Map<Product, ProductDTO>);
     }
   }
 }

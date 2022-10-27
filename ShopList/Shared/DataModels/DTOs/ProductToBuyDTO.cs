@@ -19,5 +19,7 @@ namespace ShopList.Shared.DataModels.DTOs
     public int ProductId { get; set; }
 
     public ProductDTO Product { get; set; }
+
+    public virtual IList<ProductPricingDTO>? ProductPricingDTOs { get; set; }
   }
 }

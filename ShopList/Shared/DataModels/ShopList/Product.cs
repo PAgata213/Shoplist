@@ -17,5 +17,6 @@ namespace ShopList.Shared.DataModels.ShopList
     [StringLength(250)]
     public string? Description { get; set; }
     public virtual ICollection<ProductToBuy> ProductsToBuy { get; set; }
+    public virtual ICollection<ProductPricing> ProductPricings { get; set; }
   }
 }

@@ -1,0 +1,83 @@
+﻿@page "/productspricing"
+@using ShopList.Client.DataModels;
+@using ShopList.Client.Interfaces;
+@using ShopList.Shared.DataModels.DTOs;
+@using ShopList.Shared.DataModels.ShopList;
+
+@inject IProductsService _productsService
+@inject IShopsService _shopsService
+@inject IProductsPricingService _productsPricingService
+
+<h3>ProductsPricing</h3>
+
+@if(Shops != null && Products != null)
+{
+	<div>
+		<button type="button" class="btn btn-primary" @onclick="ShowNewPricingModal">Dodaj cenę</button>
+	</div>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th style="width: 10%">#</th>
+				@foreach(var shop in Shops)
+				{
+					<th>@shop.ShopBrand.ShopBrandName</th>
+				}
+			</tr>
+		</thead>
+		<tbody>
+			@foreach(var ProductForPricing in ProductForPricings)
+			{
+				<tr>
+					<th>@ProductForPricing.Product?.ProductName</th>
+					@if(ProductForPricing.InShopProductPricings != null)
+					{
+						@foreach(var priceInShop in ProductForPricing.InShopProductPricings)
+						{
+							<th>@priceInShop.Price zł</th>
+						}
+					}
+				</tr>
+			}
+		</tbody>
+	</table>
+
+	<ShopList.Client.Modals.NewPriceModal @ref="_newProductPriceModal"
+																			OnSaveSuccess="RefreshData" />
+}
+else
+{
+	<p><em>Loading...</em></p>
+}
+@code
+{
+	public IEnumerable<Shop> Shops { get; set; }
+	public IEnumerable<Product> Products { get; set; }
+	public IEnumerable<ProductForPricing> ProductForPricings { get; set; }
+
+	private ShopList.Client.Modals.NewPriceModal _newProductPriceModal;
+
+	protected override async Task OnInitializedAsync()
+	=> await RefreshData();
+
+	private async Task RefreshData()
+	{
+		Shops = await _shopsService.GetShopsAsync();
+		Products = await _productsService.GetProductsAsync();
+		ProductForPricings = await _productsPricingService.GeneratePricingsForProducts(null, Products, Shops);
+	}
+
+	private async Task ShowNewPricingModal()
+	{
+		_newProductPriceModal.Open();
+	}
+
+	private async Task OnSaveSuccess()
+	{
+		var pricing = ProductForPricings.First(s => s.Product.Id == _newProductPriceModal.ProductPricingDTOModel.ProductId).InShopProductPricings
+		.First(s => s.ShopId == _newProductPriceModal.ProductPricingDTOModel.ShopId);
+		pricing.Price = _newProductPriceModal.ProductPricingDTOModel.Price;
+		InvokeAsync(StateHasChanged);
+	}
+}

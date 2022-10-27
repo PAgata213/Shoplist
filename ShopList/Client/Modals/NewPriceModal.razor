@@ -1,0 +1,152 @@
+﻿@using AutoMapper;
+@using ShopList.Client.Interfaces
+@using ShopList.Shared.DataModels.DTOs
+@using ShopList.Shared.DataModels.ShopList;
+@using ShopList.Client.Helpers.Components;
+
+@inject IProductsService _productsService
+@inject IShopsService _shopsService
+@inject IProductsPricingService _productsPricingService
+@inject IMapper _mapper
+
+<div class="modal @ModalClass" tabindex="-1" role="dialog" style="display:@ModalDisplay">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Nowa cena produktu</h5>
+			</div>
+			<div class="modal-body">
+				@if(ProductPricingDTOModel != null)
+				{
+					<EditForm OnValidSubmit="Save" Model="@ProductPricingDTOModel">
+						<DataAnnotationsValidator />
+						<div class="form-group row">
+							<label for="email" class="col-md-4 col-form-label">Sklep:</label>
+							<div class="col-md-10">
+								<CustomInputSelect @bind-Value="ProductPricingDTOModel.ShopId" onchange="args => OnShopSelectionChanged(args)">
+									<option value="0">-- Wybierz --</option>
+									@if(_shopsDTO != null)
+									{
+										@foreach(var shop in _shopsDTO)
+										{
+											<option value="@shop.Id">@shop.ShopBrand.ShopBrandName - @shop.Address</option>
+										}
+									}
+								</CustomInputSelect>
+								<ValidationMessage For="@(() => ProductPricingDTOModel.ProductId)" />
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="email" class="col-md-4 col-form-label">Produkt:</label>
+							<div class="col-md-10">
+								<CustomInputSelect @bind-Value="ProductPricingDTOModel.ProductId" onchange="args => OnProductSelectionChanged(args)">
+									<option value="0">-- Wybierz --</option>
+									@if(_productsDTO != null)
+									{
+										@foreach(var product in _productsDTO)
+										{
+											<option value="@product.Id">@product.ProductName</option>
+										}
+									}
+								</CustomInputSelect>
+								<ValidationMessage For="@(() => ProductPricingDTOModel.ProductId)" />
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<label for="email" class="col-md-4 col-form-label">Cena:</label>
+							<div class="col-md-10">
+								<InputNum class="form-control" Min="0" @bind-Value="ProductPricingDTOModel.Price" />
+								<ValidationMessage For="@(() => ProductPricingDTOModel.Price)" />
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-success">Save</button>
+							<button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="() => Close()">Close</button>
+						</div>
+					</EditForm>
+				}
+			</div>
+		</div>
+	</div>
+</div>
+
+@if(ShowBackdrop)
+{
+	<div class="modal-backdrop fade show"></div>
+}
+
+@code {
+	public Guid Guid = Guid.NewGuid();
+	public string ModalDisplay = "none;";
+	public string ModalClass = "";
+	public bool ShowBackdrop = false;
+
+	[Parameter] public EventCallback OnSaveSuccess { get; set; }
+
+	public ProductPricingDTO ProductPricingDTOModel { get; set; } = new();
+
+	private IEnumerable<ProductDTO> _productsDTO { get; set; }
+	private IEnumerable<Shop> _shopsDTO { get; set; }
+
+	public void Open()
+	{
+		ProductPricingDTOModel = new();
+		ModalDisplay = "block;";
+		ModalClass = "Show";
+		ShowBackdrop = true;
+		StateHasChanged();
+	}
+
+	public void Close()
+	{
+		ProductPricingDTOModel = null;
+		ModalDisplay = "none";
+		ModalClass = "";
+		ShowBackdrop = false;
+		StateHasChanged();
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		var products = await _productsService.GetProductsAsync();
+		_productsDTO = products.Select(_mapper.Map<ProductDTO>);
+
+		_shopsDTO = await _shopsService.GetShopsAsync();
+		//_shopsDTO = shops.Select(_mapper.Map<ShopDTO>);
+	}
+
+	private void OnShopSelectionChanged(ChangeEventArgs args)
+	{
+		var id = int.Parse(args.Value?.ToString() ?? "0");
+		ProductPricingDTOModel.ShopId = _shopsDTO.Where(s => s.Id == id).FirstOrDefault()?.Id ?? 0;
+	}
+
+	private void OnProductSelectionChanged(ChangeEventArgs args)
+	{
+		var id = int.Parse(args.Value?.ToString() ?? "0");
+		ProductPricingDTOModel.ProductId = _productsDTO.Where(s => s.Id == id).FirstOrDefault()?.Id ?? 0;
+	}
+
+	private async Task Save()
+	{
+		try
+		{
+			var dataExists = await _productsPricingService.GetProductPricingForShopAndProductAsync(ProductPricingDTOModel.ShopId, ProductPricingDTOModel.ProductId);
+			if(dataExists == null)
+			{
+				await _productsPricingService.CreateProductPricingAsync(ProductPricingDTOModel);
+			}
+			else
+			{
+				ProductPricingDTOModel.Id = dataExists.Id;
+				await _productsPricingService.UpdateProductPricingAsync(ProductPricingDTOModel);
+			}
+			await OnSaveSuccess.InvokeAsync();
+			Close();
+		}
+		catch(Exception)
+		{
+		}
+	}
+}

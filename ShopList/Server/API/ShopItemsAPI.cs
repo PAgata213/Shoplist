@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ShopList.Client.Pages;
 using ShopList.DataAccess.DataAccess;
 using ShopList.Shared.DataModels.DTOs;
@@ -15,6 +16,7 @@ public static class ShopItemsAPI
   {
     app.MapGet(ShopList.Shared.APIAdressess.GetProducts, GetShopItems);
     app.MapGet(ShopList.Shared.APIAdressess.GetProduct, GetShopItem);
+    app.MapPost(ShopList.Shared.APIAdressess.GetShopItemsWithGivenId, GetShopItemsWithGivenId);
     app.MapPost(ShopList.Shared.APIAdressess.CreateProduct, CreateShopItem);
     app.MapPut(ShopList.Shared.APIAdressess.UpdateProduct, UpdateShopItem);
     app.MapPost(ShopList.Shared.APIAdressess.RemoveProduct, RemoveShopItem);
@@ -30,6 +32,12 @@ public static class ShopItemsAPI
   {
     var product = await dataAccessHelper.GetAsync<Product>(id);
     return new Response<Product> { DataModel = product };
+  }
+
+  private static async Task<Response<IEnumerable<Product>>> GetShopItemsWithGivenId(IDataAccessHelper dataAccessHelper, ListTransferDTO<int> productsId)
+  {
+    var products = await dataAccessHelper.GetAsQuerable<Product>().Where(s => productsId.List.Contains(s.Id)).ToListAsync();
+    return new Response<IEnumerable<Product>> { DataModel = products };
   }
 
   private static async Task<IResult> CreateShopItem(IDataAccessHelper dataAccessHelper, IMapper mapper, ProductDTO productDTO)
