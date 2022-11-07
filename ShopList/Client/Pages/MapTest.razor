@@ -1,0 +1,19 @@
+﻿@page "/map"
+@inject IJSRuntime _js
+
+<h3>MapTest</h3>
+
+<div id="map" style="height:90vh;width:100%;">
+</div>
+
+@code
+{
+	protected override Task OnAfterRenderAsync(bool firstRender)
+	{
+		if(firstRender)
+		{
+			_js.InvokeVoidAsync("initializeMap", null);
+		}
+		return base.OnAfterRenderAsync(firstRender);
+	}
+}
