@@ -16,6 +16,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopList.Server.Tests", "ShopList.Server.Tests\ShopList.Server.Tests.csproj", "{C32C0635-D8E6-4567-8170-7D3DD125CB4A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1_Tests", "1_Tests", "{6466866D-7D05-4BCB-8183-9F0BC3F3E0C5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,9 +42,16 @@ Global
 		{D8651AFE-F8E9-489D-A930-91EC56A46BBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8651AFE-F8E9-489D-A930-91EC56A46BBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8651AFE-F8E9-489D-A930-91EC56A46BBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C32C0635-D8E6-4567-8170-7D3DD125CB4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C32C0635-D8E6-4567-8170-7D3DD125CB4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C32C0635-D8E6-4567-8170-7D3DD125CB4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C32C0635-D8E6-4567-8170-7D3DD125CB4A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C32C0635-D8E6-4567-8170-7D3DD125CB4A} = {6466866D-7D05-4BCB-8183-9F0BC3F3E0C5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CDBD1D2F-CCDA-4F98-B715-088B28BA6C27}
