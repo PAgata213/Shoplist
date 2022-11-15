@@ -52,11 +52,19 @@ namespace ShopList.Client.Helpers
 
     private async Task<Response<T>> ProcessData<T>(HttpResponseMessage response) where T : class
     {
+      if(!response.IsSuccessStatusCode)
+      {
+        new Response<T> { ErrorMessage = "No data has ben returned" };
+      }
       var content = await response.Content.ReadAsStringAsync();
       var contentData = JsonConvert.DeserializeObject<Response<T>>(content);
       if (contentData == null)
       {
-        contentData = new Response<T> { ErrorMessage = "No data has ben returned" };
+        contentData = new Response<T> 
+        { 
+          ErrorMessage = "No data has ben returned", 
+          StatusCode = response.StatusCode 
+        };
       }
       contentData!.StatusCode = response.StatusCode;
       return contentData;
