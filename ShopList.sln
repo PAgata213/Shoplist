@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopList.Server.Tests", "ShopList.Server.Tests\ShopList.Server.Tests.csproj", "{C32C0635-D8E6-4567-8170-7D3DD125CB4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopList.Server.Tests", "ShopList.Server.Tests\ShopList.Server.Tests.csproj", "{C32C0635-D8E6-4567-8170-7D3DD125CB4A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1_Tests", "1_Tests", "{6466866D-7D05-4BCB-8183-9F0BC3F3E0C5}"
 EndProject
